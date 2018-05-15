@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
-import PostGrid from '../Common/PostGrid';
+import PostGrid from '../Post/PostGrid';
 
 export default class TabViewExample extends PureComponent {
   constructor(props) {

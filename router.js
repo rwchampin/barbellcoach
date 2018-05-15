@@ -1,9 +1,10 @@
 import React from 'react';
 import { Icon } from 'react-native-elements';
 import { Image } from 'react-native';
-import { createBottomTabNavigator, StackNavigator, createStackNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Login from './Auth/Login';
 import Signup from './Auth/Signup';
+import Camera from './Screens/Camera/Camera';
 import { CoachNavigator } from './Screens/Coach/CoachNavigator';
 import { NotificationsNavigator } from './Screens/Notifications/NotificationsNavigator';
 import { SearchNavigator } from './Screens/Search/SearchNavigator';
@@ -44,6 +45,11 @@ const AuthNavigator = () => {
   );
 };
 
+const CameraNavigator = createStackNavigator({
+  Camera: {
+    screen: Camera
+  }
+})
 
 const AppNavigator = (user) => {
   const landing = user.user.data().userType === 'client' ? (

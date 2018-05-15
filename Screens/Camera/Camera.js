@@ -8,7 +8,7 @@ import {
   Dimensions
 } from 'react-native';
 import { CameraKitCamera, CameraKitGalleryView } from 'react-native-camera-kit';
-import PostThumbnail from '../../Common/PostThumbnail';
+import CameraRollThumbnail from './CameraRollThumbnail';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 
@@ -35,7 +35,6 @@ class Camera extends Component {
       selectedImage: selectedImage
     });
     this.props.setPostImage(selectedImage);
-
   }
 
   render() {
@@ -54,7 +53,7 @@ class Camera extends Component {
               const opacity = this.state.selectedImage === p.node.image.uri ? 0.5 : 1;
               const first = i === 0 ? true : false;
               return (
-                <PostThumbnail
+                <CameraRollThumbnail
                   first={first}
                   key={i}
                   opacity={opacity}

@@ -4,25 +4,23 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Dimensions,
   Picker,
   TextInput
 } from 'react-native';
 import {
-  FormInput,
   Slider,
   Divider
 } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import firebase from 'react-native-firebase';
-import Camera from './Camera/Camera';
+// import Camera from '../Camera/Camera';
 import { connect } from 'react-redux';
 
 class AddPostContent extends Component {
   static uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    )
+    );
   }
   static navigationOptions({ navigation }) {
     const headerTitle = 'Post Details';
@@ -52,18 +50,20 @@ class AddPostContent extends Component {
   addFileToUser(imageUrl) {
     const that = this;
     const post = {
+      user: this.props.AuthReducer.user.data().uid,
       imageUrl: imageUrl,
       liftDescription: this.state.liftDescription,
       liftType: this.state.liftType,
       rpe: this.state.rpe
     }
 
-    this.props.AuthReducer.user.ref.update({
-      posts: {
-        lifts: [post, ...this.props.AuthReducer.user.data().posts.lifts]
-      }
+    const ref = firebase.firestore().collection('posts');
+    ref.add(post).then(() => {
+      that.props.navigation.navigate('Profile');
+    }).error((err) => {
+      alert('ERROR::' + err);
     });
-    that.props.navigation.navigate('Profile');
+
   }
   uploadFile(blob) {
      const uid = this.props.AuthReducer.user.data().uid;

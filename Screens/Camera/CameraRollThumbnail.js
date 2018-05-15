@@ -5,23 +5,17 @@ import {
   Dimensions
 } from 'react-native';
 
-
-class PostThumbnail extends Component {
+class CameraRollThumbnail extends Component {
   componentDidMount() {
     if (this.props.first) {
       this.props.setSelectedImage(this.props.source);
     }
   }
   render() {
-    const that = this;
     return (
       <TouchableOpacity
         onPress={() => {
-          if(this.props.setSelectedImage) {
-            that.props.setSelectedImage(this.props.source);
-          } else {
-            that.props.navigation.navigate('PostDetail');
-          }
+          this.props.setSelectedImage(this.props.source);
         }}
       >
         <Image
@@ -37,4 +31,4 @@ class PostThumbnail extends Component {
   }
 }
 
-export default PostThumbnail;
+export default CameraRollThumbnail;

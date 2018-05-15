@@ -21,7 +21,7 @@ class PostGrid extends Component {
               <PostThumbnail
                 navigation={that.props.navigation}
                 key={i}
-                source={post.imageUrl}
+                post={post}
               />
             );
           })}

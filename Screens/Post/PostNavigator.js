@@ -1,4 +1,4 @@
-import { StackNavigator, createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import CreatePost from './CreatePost';
 import PostScreens from './PostScreens';
 
