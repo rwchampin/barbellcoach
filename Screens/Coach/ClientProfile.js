@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View
+  View,
+  Text
 } from 'react-native';
-
+import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import { addUser } from '../../Redux/Actions';
-import ProfileTabSections from '../Profile/ProfileTabSections';
+import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from '../Profile/ProfileHeaderSection';
 
 class ClientProfile extends Component {
@@ -14,11 +15,39 @@ class ClientProfile extends Component {
     return ({ headerTitle: headerTitle });
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      posts: []
+    };
+    this.tabs = [
+      { key: '1', title: 'Videos' },
+      { key: '2', title: 'Programs' }
+    ];
+  }
+
+  componentDidMount() {
+    this.setState({ loading: true });
+    const posts = [];
+    const that = this;
+    const ref = firebase.firestore().collection('posts');
+    ref.where('user', '==', this.props.navigation.state.params.client.uid).get()
+      .then((snapshot) => {
+        snapshot.forEach((post) => {
+          posts.push(post.data());
+        });
+        that.setState({ loading: false, posts: posts });
+      });
+  }
+
   render() {
+    if (this.state.loading) {
+      return <Text>Loading...</Text>;
+    }
     return (
       <View>
         <ProfileHeaderSection avatar={this.props.navigation.state.params.client.avatar} />
-        <ProfileTabSections gridItems={this.props.navigation.state.params.client.posts.lifts} />
+        <TabSections tabs={this.tabs} postDetailDestination="VisitingProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />
       </View>
     );
   }

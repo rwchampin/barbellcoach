@@ -25,9 +25,12 @@ class AddPostContent extends Component {
   static navigationOptions({ navigation }) {
     const headerTitle = 'Post Details';
     const params = navigation.state.params || {};
-    return ({ headerTitle: headerTitle, headerRight: <TouchableOpacity onPress={() => {
+    return ({
+      headerTitle: headerTitle,
+      headerRight: <TouchableOpacity onPress={() => {
       params.postLift();
-    }}><Text style={{ marginRight: 20 }}>Post Lift</Text></TouchableOpacity> });
+    }}>
+    <Text style={{ marginRight: 20 }}>Post Lift</Text></TouchableOpacity> });
   }
   constructor(props) {
     super(props);

@@ -12,7 +12,7 @@ class PostThumbnail extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          that.props.navigation.navigate('PostDetail', {
+          that.props.navigation.navigate(this.props.postDetailDestination, {
             post: this.props.post
           });
         }}

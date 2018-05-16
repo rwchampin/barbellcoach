@@ -17,9 +17,9 @@ class Search extends Component {
     this.state = {
       clients: [],
       user: {
-        user: props.screenProps.user,
-        userType: props.screenProps.user.data().userType,
-        uid: props.screenProps.user.data().uid
+        user: '',//props.screenProps.user,
+        userType: '',//props.screenProps.user.data().userType,
+        uid: ''//props.screenProps.user.data().uid
       }
     };
   }

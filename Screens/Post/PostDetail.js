@@ -9,6 +9,11 @@ import firebase from 'react-native-firebase';
 import { Rating } from 'react-native-elements';
 
 class PostDetail extends Component {
+  static navigationOptions({ navigation }) {
+    const params = navigation.state.params || {};
+    const headerTitle = 'Post Details'
+    return ({ headerTitle: headerTitle });
+  }
   constructor(props) {
     super(props);
     this.state = {

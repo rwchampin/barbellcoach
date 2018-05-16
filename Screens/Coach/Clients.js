@@ -10,8 +10,8 @@ import ClientCard from './ClientCard';
 
 
 class Clients extends Component {
-  static navigationOptions({ navigation }) {
-    const headerTitle = 'Clients'
+  static navigationOptions() {
+    const headerTitle = 'Clients';
     return ({ headerTitle: headerTitle });
   }
   constructor(props) {
@@ -37,7 +37,6 @@ class Clients extends Component {
       .catch((err) => {
         console.log('Error getting documents', err);
       });
-      // this.props.addUser(this.props.screenProps.user);
   }
   render() {
     if (!this.state.clients.length) {

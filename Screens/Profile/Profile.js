@@ -6,7 +6,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import ProfileTabSections from './ProfileTabSections';
+import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from './ProfileHeaderSection';
 
 class Profile extends Component {
@@ -61,7 +61,8 @@ class Profile extends Component {
         <ProfileHeaderSection
           avatar={this.props.AuthReducer.user.data().avatar}
         />
-        <ProfileTabSections
+        <TabSections
+          postDetailDestination="ProfilePostDetail"
           navigation={this.props.navigation}
           gridItems={this.state.posts}
         />

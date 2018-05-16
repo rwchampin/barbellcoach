@@ -4,7 +4,6 @@ import {
   ScrollView,
   View
 } from 'react-native';
-import { connect } from 'react-redux';
 import PostThumbnail from './PostThumbnail';
 
 class PostGrid extends Component {
@@ -19,6 +18,7 @@ class PostGrid extends Component {
           {this.props.gridItems.map((post, i) => {
             return (
               <PostThumbnail
+                postDetailDestination={this.props.postDetailDestination}
                 navigation={that.props.navigation}
                 key={i}
                 post={post}

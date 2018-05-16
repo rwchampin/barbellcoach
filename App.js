@@ -27,9 +27,13 @@ export default class App extends Component {
         that.setState({
           user: ''
         });
-        return
+        return;
       }
-      firebase.firestore().collection('userProfiles').where('uid', '==', user._user.uid).get().then((snapshot) => {
+      firebase.firestore()
+        .collection('userProfiles')
+        .where('uid', '==', user._user.uid)
+        .get()
+        .then((snapshot) => {
         snapshot.forEach((doc) => {
           that.setState({
             user: doc
@@ -38,9 +42,8 @@ export default class App extends Component {
             type: 'add_user',
             payload: doc
           });
-        })
-      })
-
+        });
+      });
     });
   }
   componentWillUnmount() {

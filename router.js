@@ -9,7 +9,6 @@ import { CoachNavigator } from './Screens/Coach/CoachNavigator';
 import { NotificationsNavigator } from './Screens/Notifications/NotificationsNavigator';
 import { SearchNavigator } from './Screens/Search/SearchNavigator';
 import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
-import { ClientNavigator } from './Screens/Coach/ClientNavigator';
 import { PostNavigator } from './Screens/Post/PostNavigator';
 
 const AuthNavigator = () => {
@@ -44,12 +43,6 @@ const AuthNavigator = () => {
     <AuthStackNavigator />
   );
 };
-
-const CameraNavigator = createStackNavigator({
-  Camera: {
-    screen: Camera
-  }
-})
 
 const AppNavigator = (user) => {
   const landing = user.user.data().userType === 'client' ? (
