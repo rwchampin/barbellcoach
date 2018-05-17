@@ -54,7 +54,7 @@ class Profile extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View style={{ display: 'flex', height: '100%' }}>
+      <View style={{ display: 'flex', height: '100%', backgroundColor: 'white' }}>
         {/* <TouchableOpacity onPress={Profile.logout}>
           <Text>LOGOUT</Text>
         </TouchableOpacity> */}

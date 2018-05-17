@@ -5,7 +5,7 @@ import {
   Text,
   Dimensions
 } from 'react-native';
-import { Button } from 'react-native-elements';
+// import { Button } from 'react-native-elements';
 
 class ProfileHeaderSection extends Component {
   render() {

@@ -30,7 +30,14 @@ export default class TabSections extends PureComponent {
   }
 
   renderHeader(props) {
-    return <TabBar {...props} />;
+    return (
+      <TabBar
+        {...props}
+        style={{ marginBottom: 10, backgroundColor: 'white', margin:0, padding:0, height: 30 }}
+        labelStyle={{ color: 'black', margin:0 }}
+        indicatorStyle={{ height: 1, backgroundColor: 'black' }}
+      />
+    );
   }
 
   render() {
