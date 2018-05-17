@@ -13,10 +13,11 @@ const inactiveTintColor = '#929292';
 const styles = StyleSheet.create({
   tabBar: {
     height: 49,
+    marginBottom: 20,
     flexDirection: 'row',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(0, 0, 0, .3)',
-    backgroundColor: '#F7F7F7'
+    backgroundColor: '#f7f9fc'
   },
   tab: {
     flex: 1,

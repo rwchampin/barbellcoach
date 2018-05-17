@@ -41,8 +41,8 @@ class ClientProfile extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View>
-        <ProfileHeaderSection avatar={this.props.navigation.state.params.client.avatar} />
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <ProfileHeaderSection user={this.props.navigation.state.params.client} />
         <TabSections tabs={this.tabs} postDetailDestination="VisitingProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />
       </View>
     );

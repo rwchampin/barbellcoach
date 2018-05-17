@@ -12,6 +12,10 @@ import { connect } from 'react-redux';
 import firebase from 'react-native-firebase';
 
 class Search extends Component {
+  static navigationOptions() {
+    const title = 'Search';
+    return ({ headerTitle: title });
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -58,10 +62,10 @@ class Search extends Component {
   render() {
     const that = this;
     return (
-      <View>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         <SearchBar
           round
-          lightTheme
+          darkTheme
         />
         <View>
           {this.state.clients.map((client, i) => {
@@ -83,6 +87,11 @@ class Search extends Component {
                     </View>
                   </TouchableOpacity>
                 }
+                onPress={() => {
+                  this.props.navigation.navigate('VisitingProfile', {
+                    client: client
+                  });
+                }}
               />
             );
           })}

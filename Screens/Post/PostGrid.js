@@ -16,8 +16,10 @@ class PostGrid extends Component {
       <ScrollView>
         <View style={{ display: 'flex', height: '100%', flexWrap: 'wrap', flex: 1, flexDirection: 'row' }}>
           {this.props.gridItems.map((post, i) => {
+            const first = i === 0 ? true : false;
             return (
               <PostThumbnail
+                first={first}
                 postDetailDestination={this.props.postDetailDestination}
                 navigation={that.props.navigation}
                 key={i}

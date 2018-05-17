@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from './ProfileHeaderSection';
+import { Icon } from 'react-native-elements';
 
 class Profile extends Component {
   static async logout() {
@@ -16,7 +17,10 @@ class Profile extends Component {
   static navigationOptions({ navigation }) {
     const params = navigation.state.params || {};
     const title = navigation.state.params ? params.user.firstName + ' ' + params.user.lastName : '';
-    return ({ headerTitle: title });
+    return ({
+      headerTitle: title,
+      headerRight: <View style={{ marginRight: 10 }}><Icon name="dots-three-horizontal" type="entypo" size={20} color={'#000000'} style={{ marginRight: 10 }} /></View>
+    });
   }
   constructor(props) {
     super(props);
@@ -59,7 +63,7 @@ class Profile extends Component {
           <Text>LOGOUT</Text>
         </TouchableOpacity> */}
         <ProfileHeaderSection
-          avatar={this.props.AuthReducer.user.userProfile.avatar}
+          user={this.props.AuthReducer.user.userProfile}
         />
         <TabSections
           postDetailDestination="ProfilePostDetail"

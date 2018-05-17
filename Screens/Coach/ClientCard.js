@@ -36,7 +36,7 @@ class ClientCard extends Component {
   render() {
     return (
       <TouchableOpacity onPress={this.goToClientDetail}>
-        <Card title={this.state.client.firstName}>
+        <Card title={this.state.client.firstName} containerStyle={{ borderColor: 'black', backgroundColor: '#f7f9fc' }}>
           <View>
             <Image
               style={{width: 50, height: 50, borderRadius: 25}}

@@ -44,7 +44,7 @@ class Clients extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View>
+      <View style={{ backgroundColor: 'white', height: '100%' }}>
         {this.state.clients.map((client, i) => {
           return <ClientCard key={i} client={client} navigation={this.props.navigation} />
         })}
