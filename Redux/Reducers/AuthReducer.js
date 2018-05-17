@@ -4,7 +4,10 @@ import {
 } from '../Actions/types';
 
 const INITIAL_STATE = {
-  user: {},
+  user: {
+    userProfile: {},
+    userRef: {}
+  },
   clients: []
 };
 
@@ -12,7 +15,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ADD_USER:
-      return { ...state, user: action.payload };
+      return { ...state, user: { userProfile: action.payload.data(), userRef: action.payload }};
     case ADD_CLIENTS:
       return { ...state, clients: action.payload };
     default:

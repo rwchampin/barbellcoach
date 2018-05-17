@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { signOut } from 'react-native-firebase';
+import firebase from 'react-native-firebase';
 import {
   Text,
   View
@@ -20,12 +20,12 @@ class Clients extends Component {
       clients: []
     };
   }
-  componentDidMount() {
+  componentWillReceiveProps(nextProps) {
     const dbUserRef = firebase.firestore().collection('userProfiles');
     const clients = [];
     const that = this;
     dbUserRef
-      .where('coach', '==', this.props.screenProps.user.data().uid).get().then((snapshot) => {
+      .where('coach', '==', nextProps.AuthReducer.user.userProfile.uid).get().then((snapshot) => {
         snapshot.forEach((doc) => {
           const client = doc.data();
           clients.push(client);
@@ -38,6 +38,7 @@ class Clients extends Component {
         console.log('Error getting documents', err);
       });
   }
+
   render() {
     if (!this.state.clients.length) {
       return <Text>Loading...</Text>;

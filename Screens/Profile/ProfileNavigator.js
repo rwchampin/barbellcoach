@@ -13,6 +13,6 @@ export const ProfileNavigator = createStackNavigator(
     }
   }, {
     initialRouteName: 'Profile',
-    headerMode: 'float'
+    headerMode: 'none'
   }
 );

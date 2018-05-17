@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from 'react-native-elements';
-import { Image } from 'react-native';
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import { View, Button } from 'react-native';
+import { TabNavigator, createStackNavigator } from 'react-navigation';
 import Login from './Auth/Login';
 import Signup from './Auth/Signup';
 import Camera from './Screens/Camera/Camera';
@@ -9,7 +9,7 @@ import { CoachNavigator } from './Screens/Coach/CoachNavigator';
 import { NotificationsNavigator } from './Screens/Notifications/NotificationsNavigator';
 import { SearchNavigator } from './Screens/Search/SearchNavigator';
 import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
-import { PostNavigator } from './Screens/Post/PostNavigator';
+import TabBar from './TabBar';
 
 const AuthNavigator = () => {
   const SignUpNavigator = createStackNavigator({
@@ -44,12 +44,29 @@ const AuthNavigator = () => {
   );
 };
 
-const AppNavigator = (user) => {
+const CaptureStack = createStackNavigator({
+  Capture: {
+    screen: props => <Camera title="Capture" {...props} />,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Capture',
+      headerLeft: (
+        <Button
+          title="Cancel"
+          // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
+          // we need to pass `null` as an argument to goBack.
+          onPress={() => navigation.goBack(null)}
+        />
+      )
+    })
+  }
+});
+
+const createTabNavigator = (user) => {
   const landing = user.user.data().userType === 'client' ? (
     {
-      screen: ClientNavigator,
+      screen: CoachNavigator,
       navigationOptions: {
-        tabBarLabel: 'Trainin',
+        tabBarLabel: 'Training',
         tabBarIcon: ({ tintColor }) => <Icon name="people" size={35} color={tintColor} />
       }
     }
@@ -63,38 +80,48 @@ const AppNavigator = (user) => {
     }
   );
 
-  const Tabs = createBottomTabNavigator({
-    LandingPage: landing,
+  const Tabs = TabNavigator({
+    Landing: landing,
     Search: {
-      screen: SearchNavigator,
-      navigationOptions: {
-        tabBarLabel: 'Search',
-        tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} color={tintColor} />
-      }
+      screen: SearchNavigator
     },
-    Camera: {
-      screen: PostNavigator,
-      navigationOptions: {
-        tabBarLabel: 'New Post',
-        tabBarIcon: ({ tintColor }) => <Icon name="camera" size={35} color={tintColor} />
-      }
+    Capture: {
+      screen: View
     },
     Notifications: {
-      screen: NotificationsNavigator,
-      navigationOptions: {
-        tabBarLabel: 'Notifications',
-        tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />
-      }
+      screen: NotificationsNavigator
     },
     Profile: {
-      screen: ProfileNavigator,
-      navigationOptions: {
-        tabBarLabel: 'Profile',
-        tabBarIcon: ({ tintColor }) => <Image resizeMode="cover" style={{ height: 25, width: 25, borderRadius: 12.5 }} source={{ uri: user.user.data().avatar }} />
-      }
+      screen: ProfileNavigator
     }
+  }, {
+    // Instagram has the tabbar on the bottom on iOS and Android
+    tabBarPosition: 'bottom',
+    // Specify our custom navbar
+    tabBarComponent: TabBar
   });
-  return <Tabs screenProps={user} />;
+
+  return Tabs;
 };
 
-export { AuthNavigator, AppNavigator };
+
+const CreateRootStackNavigator = (user) => {
+  const RootStack = createStackNavigator({
+    Tabs: {
+      screen: createTabNavigator(user)
+    },
+    CaptureModal: {
+      screen: CaptureStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    }
+  }, {
+    headerMode: 'none',
+    mode: 'modal'
+  });
+
+  return <RootStack />;
+};
+
+export { AuthNavigator, CreateRootStackNavigator };

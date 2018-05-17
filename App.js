@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Provider } from 'react-redux';
 import reducers from './Redux/Reducers';
-import { AuthNavigator, AppNavigator } from './router';
+import { AuthNavigator, CreateRootStackNavigator } from './router';
 import { createStore, combineReducers } from 'redux';
 import firebase from 'react-native-firebase';
 import { ADD_USER } from './Redux/Actions';
@@ -34,17 +34,17 @@ export default class App extends Component {
         .where('uid', '==', user._user.uid)
         .get()
         .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          that.setState({
-            user: doc
-          });
-          store.dispatch({
-            type: 'add_user',
-            payload: doc
+          snapshot.forEach((doc) => {
+            that.setState({
+              user: doc
+            });
+            store.dispatch({
+              type: 'add_user',
+              payload: doc
+            });
           });
         });
       });
-    });
   }
   componentWillUnmount() {
     if (this.unsubscriber) {
@@ -52,7 +52,7 @@ export default class App extends Component {
     }
   }
   render() {
-    const route = this.state.user ? <AppNavigator user={this.state.user} /> : <AuthNavigator />;
+    const route = this.state.user ? <CreateRootStackNavigator user={this.state.user} /> : <AuthNavigator />;
 
     return (
       <Provider store={store}>

@@ -28,7 +28,7 @@ class Profile extends Component {
   }
   componentWillMount() {
     this.props.navigation.setParams({
-      user: this.props.AuthReducer.user.data()
+      user: this.props.AuthReducer.user.userProfile
     });
   }
   componentDidMount() {
@@ -37,7 +37,7 @@ class Profile extends Component {
     });
     const posts = [];
     const ref = firebase.firestore().collection('posts');
-    ref.where('user', '==', this.props.AuthReducer.user.data().uid).get()
+    ref.where('user', '==', this.props.AuthReducer.user.userProfile.uid).get()
       .then((snapshot) => {
         snapshot.forEach((post) => {
           posts.push(post.data());
@@ -54,12 +54,12 @@ class Profile extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View>
-        <TouchableOpacity onPress={Profile.logout}>
+      <View style={{ display: 'flex', height: '100%' }}>
+        {/* <TouchableOpacity onPress={Profile.logout}>
           <Text>LOGOUT</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <ProfileHeaderSection
-          avatar={this.props.AuthReducer.user.data().avatar}
+          avatar={this.props.AuthReducer.user.userProfile.avatar}
         />
         <TabSections
           postDetailDestination="ProfilePostDetail"

@@ -20,10 +20,6 @@ class ClientProfile extends Component {
     this.state = {
       posts: []
     };
-    this.tabs = [
-      { key: '1', title: 'Videos' },
-      { key: '2', title: 'Programs' }
-    ];
   }
 
   componentDidMount() {

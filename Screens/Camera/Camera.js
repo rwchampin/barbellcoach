@@ -34,7 +34,7 @@ class Camera extends Component {
     this.setState({
       selectedImage: selectedImage
     });
-    this.props.setPostImage(selectedImage);
+    // this.props.setPostImage(selectedImage);
   }
 
   render() {
