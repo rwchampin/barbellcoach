@@ -43,8 +43,8 @@ class CreateProgram extends Component {
   addWeek() {
     this.setState({
       program: [
-        <Week weekNumber={this.state.program.length} />,
-        ...this.state.program
+        ...this.state.program,
+        <Week weekNumber={this.state.program.length} />
       ]
     });
   }
@@ -59,13 +59,7 @@ class CreateProgram extends Component {
   }
 
   render() {
-    const programContent = this.state.program.length ? this.buildProgram() : <Text>Add a week to begin building a program</Text>;
-    return (
-      <View style={{ display: 'flex', height: '100%', flexDirection: 'column' }}>
-      <Button
-        title='Add Week'
-        onPress={this.addWeek}
-      />
+    const programContent = this.state.program.length ? this.buildProgram() : (
       <View style={{
         borderColor: 'black',
         borderWidth: 1,
@@ -76,8 +70,18 @@ class CreateProgram extends Component {
         alignItems: 'center'
       }}
       >
-        {programContent}
+        <Text>Add a week to begin building a program</Text>
       </View>
+    );
+    return (
+      <View style={{ display: 'flex', height: '100%', flexDirection: 'column', width: '100%' }}>
+      <Button
+        title='Add Week'
+        containerStyle={{ width: '100%' }}
+        onPress={this.addWeek}
+      />
+
+      {programContent}
 
       </View>
     );

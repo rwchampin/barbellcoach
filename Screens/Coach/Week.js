@@ -27,8 +27,8 @@ class Week extends Component {
   addDay() {
     this.setState({
       days: [
-        <Day dayNumber={this.state.days.length + 1} />,
-        ...this.state.days
+        ...this.state.days,
+        <Day dayNumber={this.state.days.length + 1} />
       ]
     });
   }
@@ -43,10 +43,8 @@ class Week extends Component {
   render() {
     const days = this.state.days.length ? this.state.days : <Text>Add a day</Text>;
     return (
-      <Card
-        containerStyle={{ width: '100%' }}
-      >
-        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Card>
+        <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ fontWeight: 'bold' }}>{`Week ${this.props.weekNumber + 1}`}</Text>
           <TouchableOpacity onPress={this.addDay}><Text>Add Day</Text></TouchableOpacity>
         </View>
