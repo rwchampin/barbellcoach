@@ -3,7 +3,8 @@ import firebase from 'react-native-firebase';
 import {
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import TabSections from '../Common/TabSections';
@@ -58,7 +59,7 @@ class Profile extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View style={{ display: 'flex', height: '100%', backgroundColor: 'white' }}>
+      <ScrollView style={{ display: 'flex', height: '100%', backgroundColor: 'white' }}>
         {/* <TouchableOpacity onPress={Profile.logout}>
           <Text>LOGOUT</Text>
         </TouchableOpacity> */}
@@ -70,7 +71,7 @@ class Profile extends Component {
           navigation={this.props.navigation}
           gridItems={this.state.posts}
         />
-      </View>
+      </ScrollView>
     );
   }
 }

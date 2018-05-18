@@ -1,25 +1,40 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import { addUser } from '../../Redux/Actions';
 import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from '../Profile/ProfileHeaderSection';
+import { Icon } from 'react-native-elements';
 
 class ClientProfile extends Component {
   static navigationOptions({ navigation }) {
-    const headerTitle = navigation.state.params.client.firstName;
-    return ({ headerTitle: headerTitle });
+    const params = navigation.state.params || {};
+    const headerTitle = params.client.firstName;
+    console.log(params)
+    return ({
+      headerTitle: headerTitle,
+      headerRight: <View style={{ marginRight: 10 }}><TouchableOpacity onPress={params.goToCreatePrograms}><Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>
+    });
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      posts: []
+      posts: [],
+      modalVisible: false
     };
+    this.goToCreatePrograms = this.goToCreatePrograms.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.navigation.setParams({ goToCreatePrograms: this.goToCreatePrograms });
   }
 
   componentDidMount() {
@@ -36,15 +51,19 @@ class ClientProfile extends Component {
       });
   }
 
+  goToCreatePrograms() {
+    this.props.navigation.navigate('CreateProgram');
+  }
+
   render() {
     if (this.state.loading) {
       return <Text>Loading...</Text>;
     }
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
         <ProfileHeaderSection user={this.props.navigation.state.params.client} />
         <TabSections tabs={this.tabs} postDetailDestination="VisitingProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />
-      </View>
+      </ScrollView>
     );
   }
 }

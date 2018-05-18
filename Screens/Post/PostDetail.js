@@ -35,8 +35,8 @@ class PostDetail extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View>
-        <View style={{ padding: 10, backgroundColor: 'lightgrey', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ backgroundColor: 'white', flex: 1 }}>
+        <View style={{ padding: 10, backgroundColor: 'white', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Image resizeMode="cover" style={{ height: 25, width: 25, borderRadius: 12.5 }} source={{ uri: this.state.user.avatar }} />
           <Text style={{ marginLeft: 10 }}>{this.state.user.firstName}</Text>
           <Text style={{ marginLeft: 5 }}>{this.state.user.lastName}</Text>

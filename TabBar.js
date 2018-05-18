@@ -44,7 +44,7 @@ class TabBar extends Component {
   renderItem(route, index) {
     const icons = {
       'Search': <Icon name="search" size={35} color={'#000000'} />,
-      'Profile': <Image style={{ height: 30, width: 30, borderRadius:15 }} source={{ uri: this.state.avatar }} />,
+      'Profile': this.state.avatar ? <Image style={{ height: 30, width: 30, borderRadius:15 }} source={{ uri: this.state.avatar }} /> : <View style={{ height:30, width: 30, borderRadius: 15, backgroundColor: 'grey' }} />,
       'Notifications': <Icon name="list" size={35} color={'#000000'} />,
       'Landing': <Icon name="people" size={35} color={'#000000'} />,
       'Capture': <Icon name="camera" size={35} color={'#000000'} />
