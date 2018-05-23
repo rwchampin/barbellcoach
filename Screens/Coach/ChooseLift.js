@@ -19,7 +19,7 @@ class ChooseLift extends Component {
         <View>
           <List>
             {this.state.lifts.map((lift, i) => {
-              return <ListItem key={i} title={lift} onPress={() => { this.props.navigation.navigate('LiftDetails'); }} />;
+              return <ListItem key={i} title={lift} onPress={() => { this.props.navigation.navigate('LiftDetails', { lift: lift }); }} />;
             })}
           </List>
         </View>

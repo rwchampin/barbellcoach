@@ -11,6 +11,8 @@ import { addUser } from '../../Redux/Actions';
 import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from '../Profile/ProfileHeaderSection';
 import { Icon } from 'react-native-elements';
+import PostGrid from '../Post/PostGrid';
+import Programs from '../Profile/Programs';
 
 class ClientProfile extends Component {
   static navigationOptions({ navigation }) {
@@ -55,13 +57,21 @@ class ClientProfile extends Component {
   }
 
   render() {
+    const tabRoutes = [
+      { key: '1', title: 'Lifts' },
+      { key: '2', title: 'Feed' }
+    ];
+    const routeMap = {
+      '1': () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.state.posts} />,
+      '2': () => <Programs />
+    };
     if (this.state.loading) {
       return <Text>Loading...</Text>;
     }
     return (
       <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
         <ProfileHeaderSection user={this.props.navigation.state.params.client} />
-        <TabSections tabs={this.tabs} postDetailDestination="VisitingProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />
+        <TabSections routeMap={routeMap} routeKeys={tabRoutes} tabs={this.tabs} postDetailDestination="VisitingProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />
       </ScrollView>
     );
   }

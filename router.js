@@ -79,7 +79,7 @@ const ChooseLiftStack = createStackNavigator({
     })
   },
   LiftDetails: {
-    screen: props => <LiftDetails />,
+    screen: props => <LiftDetails {...props} />,
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Add Lift Details',
       headerLeft: (

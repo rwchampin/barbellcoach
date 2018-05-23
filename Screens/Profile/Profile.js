@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
 import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from './ProfileHeaderSection';
 import { Icon } from 'react-native-elements';
+import PostGrid from '../Post/PostGrid';
+import Programs from '../Profile/Programs';
 
 class Profile extends Component {
   static async logout() {
@@ -55,21 +57,27 @@ class Profile extends Component {
   }
 
   render() {
+    const tabRoutes = [
+      { key: '1', title: 'Lifts' },
+      { key: '2', title: 'Feed' }
+    ];
+    const routeMap = {
+      '1': () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.state.posts} />,
+      '2': () => <Programs />
+    };
     if (this.state.loading) {
       return <Text>Loading...</Text>;
     }
     return (
       <ScrollView style={{ display: 'flex', height: '100%', backgroundColor: 'white' }}>
-        {/* <TouchableOpacity onPress={Profile.logout}>
-          <Text>LOGOUT</Text>
-        </TouchableOpacity> */}
         <ProfileHeaderSection
           user={this.props.AuthReducer.user.userProfile}
         />
         <TabSections
+          routeKeys={tabRoutes}
+          routeMap={routeMap}
           postDetailDestination="ProfilePostDetail"
           navigation={this.props.navigation}
-          gridItems={this.state.posts}
         />
       </ScrollView>
     );

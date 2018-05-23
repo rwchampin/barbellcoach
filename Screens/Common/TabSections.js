@@ -9,20 +9,13 @@ export default class TabSections extends PureComponent {
     super(props);
     this.state = {
       index: 0,
-      routes: [
-        { key: '1', title: 'Tiles' },
-        { key: '2', title: 'Feed' },
-        // { key: '3', title: 'Programs' }
-      ]
+      routes: props.routeKeys
     };
-    this.FirstRoute = () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.props.gridItems} />;
-    this.SecondRoute = () => <Programs />;
 
-    this.renderScene = SceneMap({
-      '1': this.FirstRoute,
-      '2': this.SecondRoute
-      // '3': this.FirstRoute
-    });
+    // this.FirstRoute = () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.props.gridItems} />;
+    // this.SecondRoute = () => <Programs />;
+
+    this.renderScene = SceneMap(this.props.routeMap);
 
     this.handleIndexChange = this.handleIndexChange.bind(this);
     this.renderLabel = this.renderLabel.bind(this);
