@@ -16,7 +16,7 @@ class Day extends Component {
 
   buildLifts() {
     const lifts = this.props.lifts.map((lift, i) => {
-      return <Text key={i}>{lift.lift}</Text>;
+      return <Text style={{ fontWeight: 'bold' }} key={i}>{lift.lift}</Text>;
     });
     return lifts;
   }
@@ -28,10 +28,19 @@ class Day extends Component {
         <Card>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text>{`Day ${this.props.dayNumber + 1}`}</Text>
-            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChooseLiftModal')/*this.props.addLift(this.props.weekId, this.props.dayId);*/ }}>
+            <TouchableOpacity onPress={() => {
+              this.props.navigation.navigate('ChooseLiftModal', {
+                addLift: this.props.addLift,
+                weekId: this.props.weekId,
+                dayId: this.props.dayId
+              });
+            }}
+            >
               <Text>Add Lift</Text>
-              {lifts}
             </TouchableOpacity>
+          </View>
+          <View>
+            {lifts}
           </View>
         </Card>
       </View>

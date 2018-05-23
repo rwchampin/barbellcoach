@@ -75,14 +75,14 @@ class CreateProgram extends Component {
     });
   }
 
-  addLift(weekId, dayId) {
+  addLift(weekId, dayId, lift) {
     const weekIndex = _.findIndex(this.state.program, { id: weekId });
     const week = _.find(this.state.program, { id: weekId });
     const dayIndex = _.findIndex(week.days, { id: dayId });
     const { program } = this.state;
     program[weekIndex].days[dayIndex].lifts.push({
       type: 'lift',
-      lift: 'deadlift',
+      lift: lift,
       id: CreateProgram.uuidv4()
     });
     this.setState({

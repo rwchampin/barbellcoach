@@ -14,12 +14,21 @@ class ChooseLift extends Component {
     };
   }
   render() {
+    const that = this;
     return (
       <View style={{ paddingTop: 50 }}>
         <View>
           <List>
             {this.state.lifts.map((lift, i) => {
-              return <ListItem key={i} title={lift} onPress={() => { this.props.navigation.navigate('LiftDetails', { lift: lift }); }} />;
+              const { addLift, weekId, dayId } = this.props.navigation.state.params;
+              return (
+                <ListItem
+                  hideChevron
+                  key={i}
+                  title={lift}
+                  onPress={() => { addLift(weekId, dayId, lift); that.props.navigation.goBack(null); }}
+                />
+              );
             })}
           </List>
         </View>
