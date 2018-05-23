@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import {
   StyleSheet
 } from 'react-native';
+import ReduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import reducers from './Redux/Reducers';
 import { AuthNavigator, CreateRootStackNavigator } from './router';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import firebase from 'react-native-firebase';
 import { ADD_USER } from './Redux/Actions';
 
-const store = createStore(combineReducers(reducers));
+const store = createStore(combineReducers(reducers), applyMiddleware(ReduxThunk));
 
 export default class App extends Component {
   constructor(props) {

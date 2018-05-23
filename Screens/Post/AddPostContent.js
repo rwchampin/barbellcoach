@@ -13,13 +13,12 @@ import {
 } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
 import firebase from 'react-native-firebase';
-// import Camera from '../Camera/Camera';
 import { connect } from 'react-redux';
 
 class AddPostContent extends Component {
   static uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      (c ^ crypto.getR + + ndomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
   static navigationOptions({ navigation }) {

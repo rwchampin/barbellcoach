@@ -9,6 +9,8 @@ import { CoachNavigator } from './Screens/Coach/CoachNavigator';
 import { NotificationsNavigator } from './Screens/Notifications/NotificationsNavigator';
 import { SearchNavigator } from './Screens/Search/SearchNavigator';
 import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
+import ChooseLift from './Screens/Coach/ChooseLift';
+import LiftDetails from './Screens/Coach/LiftDetails';
 import TabBar from './TabBar';
 
 const AuthNavigator = () => {
@@ -59,6 +61,40 @@ const CaptureStack = createStackNavigator({
       )
     })
   }
+});
+
+const ChooseLiftStack = createStackNavigator({
+  ChooseLift: {
+    screen: props => <ChooseLift {...props} />,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Choose a Lift',
+      headerLeft: (
+        <Button
+          title="Cancel"
+          // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
+          // we need to pass `null` as an argument to goBack.
+          onPress={() => navigation.goBack(null)}
+        />
+      )
+    })
+  },
+  LiftDetails: {
+    screen: props => <LiftDetails />,
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Add Lift Details',
+      headerLeft: (
+        <Button
+          title="Cancel"
+          // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
+          // we need to pass `null` as an argument to goBack.
+          onPress={() => navigation.goBack(null)}
+        />
+      )
+    })
+  }
+}, {
+  gesturesEnabled: false,
+  initialRouteName: 'ChooseLift'
 });
 
 const createTabNavigator = (user) => {
@@ -112,6 +148,12 @@ const CreateRootStackNavigator = (user) => {
     },
     CaptureModal: {
       screen: CaptureStack,
+      navigationOptions: {
+        gesturesEnabled: false
+      }
+    },
+    ChooseLiftModal: {
+      screen: ChooseLiftStack,
       navigationOptions: {
         gesturesEnabled: false
       }

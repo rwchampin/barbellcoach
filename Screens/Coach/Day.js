@@ -5,45 +5,38 @@ import {
   TouchableOpacity
 } from 'react-native';
 import {
-  Card,
-  Overlay
+  Card
 } from 'react-native-elements';
 
 class Day extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      addLiftModalOpen: false
-    };
-    this.addLift = this.addLift.bind(this);
+    this.buildLifts = this.buildLifts.bind(this);
   }
-  addLift() {
-    this.setState({
-      addLiftModalOpen: true
+
+  buildLifts() {
+    const lifts = this.props.lifts.map((lift, i) => {
+      return <Text key={i}>{lift.lift}</Text>;
     });
+    return lifts;
   }
+
   render() {
+    const lifts = this.buildLifts();
     return (
       <View>
         <Card>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text>{`Day ${this.props.dayNumber}`}</Text>
-            <TouchableOpacity onPress={this.addLift}>
+            <Text>{`Day ${this.props.dayNumber + 1}`}</Text>
+            <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChooseLiftModal')/*this.props.addLift(this.props.weekId, this.props.dayId);*/ }}>
               <Text>Add Lift</Text>
+              {lifts}
             </TouchableOpacity>
           </View>
         </Card>
-        <Overlay
-          isVisible={false}
-          windowBackgroundColor="rgba(255, 255, 255, .5)"
-          overlayBackgroundColor="red"
-          width="auto"
-          height="auto"
-        >
-          <Text>Hello from Overlay!</Text>
-        </Overlay>
       </View>
     );
   }
 }
+
 export default Day;

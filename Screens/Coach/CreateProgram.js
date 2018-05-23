@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
   Text,
-  View,
-  TouchableOpacity
+  View
 } from 'react-native';
-import { Icon } from 'react-native-vector-icons';
+import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
-  Button,
-  Card
+  Button
 } from 'react-native-elements';
+import { buildProgram } from '../../Redux/Actions';
 import Week from './Week';
 
 class CreateProgram extends Component {
@@ -27,32 +27,82 @@ class CreateProgram extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      program: []
+      program: [],
+      modalVisible: false
     };
     this.addWeek = this.addWeek.bind(this);
     this.addDay = this.addDay.bind(this);
+    this.addLift = this.addLift.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
+    this.toggleLiftModal = this.toggleLiftModal.bind(this);
   }
 
-  addDay() {
+  componentWillReceiveProps(nextProps) {
     this.setState({
-
-    })
+      program: nextProps.ProgramReducer.program
+    });
   }
 
   addWeek() {
     this.setState({
       program: [
         ...this.state.program,
-        <Week weekNumber={this.state.program.length} />
+        {
+          id: CreateProgram.uuidv4(),
+          days: [],
+          type: 'week'
+        }
       ]
+    });
+  }
+
+  addDay(weekId) {
+    const weekIndex = _.findIndex(this.state.program, { id: weekId });
+    const { program } = this.state;
+    program[weekIndex].days.push({
+      type: 'day',
+      lifts: [],
+      id: CreateProgram.uuidv4()
+    });
+    this.setState({
+      program: program
+    });
+  }
+
+  toggleLiftModal() {
+    this.setState({
+      modalVisible: !this.state.modalVisible
+    });
+  }
+
+  addLift(weekId, dayId) {
+    const weekIndex = _.findIndex(this.state.program, { id: weekId });
+    const week = _.find(this.state.program, { id: weekId });
+    const dayIndex = _.findIndex(week.days, { id: dayId });
+    const { program } = this.state;
+    program[weekIndex].days[dayIndex].lifts.push({
+      type: 'lift',
+      lift: 'deadlift',
+      id: CreateProgram.uuidv4()
+    });
+    this.setState({
+      program: program
     });
   }
 
   buildProgram() {
     const program = this.state.program.map((week, i) => {
       return (
-        week
+        <Week
+          key={i}
+          weekCount={i}
+          weekId={week.id}
+          addDay={this.addDay}
+          days={week.days}
+          addLift={this.addLift}
+          toggleLiftModal={this.toggleLiftModal}
+          navigation={this.props.navigation}
+        />
       );
     });
     return program;
@@ -75,16 +125,21 @@ class CreateProgram extends Component {
     );
     return (
       <View style={{ display: 'flex', height: '100%', flexDirection: 'column', width: '100%' }}>
-      <Button
-        title='Add Week'
-        containerStyle={{ width: '100%' }}
-        onPress={this.addWeek}
-      />
-
-      {programContent}
-
+        <Button
+          title="Add Week"
+          containerStyle={{ width: '100%' }}
+          onPress={this.addWeek}
+        />
+        {programContent}
       </View>
     );
   }
 }
-export default CreateProgram;
+
+const mapStateToProps = (state) => {
+  return state;
+};
+
+export default connect(mapStateToProps, {
+  buildProgram
+})(CreateProgram);

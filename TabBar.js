@@ -36,7 +36,6 @@ class TabBar extends Component {
     this.renderItem = this.renderItem.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.AuthReducer.user)
     this.setState({
       avatar: nextProps.AuthReducer.user.userProfile.avatar
     });
