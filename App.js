@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet
+  StyleSheet,
+  View
 } from 'react-native';
 import ReduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';

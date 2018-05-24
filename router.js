@@ -49,15 +49,7 @@ const CaptureStack = createStackNavigator({
   Capture: {
     screen: props => <Camera title="Capture" {...props} />,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Capture',
-      headerLeft: (
-        <Button
-          title="Cancel"
-          // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
-          // we need to pass `null` as an argument to goBack.
-          onPress={() => navigation.goBack(null)}
-        />
-      )
+      header: null
     })
   }
 });

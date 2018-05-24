@@ -38,7 +38,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Barbell Coach needs access to your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Barbell Coach needs access to your microphone</string>
 	<key>NSPhotoLibraryUsageDescription</key>

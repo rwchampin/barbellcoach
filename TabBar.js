@@ -13,7 +13,6 @@ const inactiveTintColor = '#929292';
 const styles = StyleSheet.create({
   tabBar: {
     height: 49,
-    marginBottom: 20,
     flexDirection: 'row',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(0, 0, 0, .3)',
@@ -82,8 +81,10 @@ class TabBar extends Component {
     } = navigation.state;
 
     return (
-      <View style={styles.tabBar}>
-        {routes && routes.map(this.renderItem)}
+      <View style={{ height: 75, backgroundColor: '#f7f9fc' }}>
+        <View style={styles.tabBar}>
+          {routes && routes.map(this.renderItem)}
+        </View>
       </View>
     );
   }
