@@ -8,69 +8,39 @@ import {
   Dimensions
 } from 'react-native';
 import { CameraKitCamera, CameraKitGalleryView } from 'react-native-camera-kit';
-import CameraRollThumbnail from './CameraRollThumbnail';
-import firebase from 'react-native-firebase';
-import { connect } from 'react-redux';
+import { Icon } from 'react-native-elements';
 
 class Camera extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      photos: [],
-      selectedImage: '',
-      userProfileRef: firebase.firestore().collection('userProfiles')
-    };
-    this.setSelectedImage = this.setSelectedImage.bind(this);
-  }
-  componentDidMount() {
-    CameraRoll.getPhotos({
-      first: 20,
-      assetType: 'All'
-    })
-      .then(r => this.setState({ photos: r.edges }));
-  }
-
-  setSelectedImage(selectedImage) {
-    this.setState({
-      selectedImage: selectedImage
-    });
-    // this.props.setPostImage(selectedImage);
-  }
-
   render() {
     return (
-      <View style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Image
+      <View
+        style={{ paddingBottom: 30, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'column', height: '100%' }}>
+        <CameraKitCamera
+          ref={cam => this.camera = cam}
           style={{
-            width: Dimensions.get('window').width,
-            flex: 1
+            flex: 1,
+            backgroundColor: 'white'
           }}
-          source={{ uri: this.state.selectedImage }}
+          cameraOptions={{
+            flashMode: 'auto',             // on/off/auto(default)
+            focusMode: 'on',               // off/on(default)
+            zoomMode: 'on',                // off/on(default)
+            ratioOverlay:'1:1',            // optional, ratio overlay on the camera and crop the image seamlessly
+            ratioOverlayColor: '#00000077' // optional
+          }}
         />
-        <ScrollView>
-          <View style={{ display: 'flex', height: '100%', flexWrap: 'wrap', flex: 1, flexDirection: 'row' }}>
-            {this.state.photos.map((p, i) => {
-              const opacity = this.state.selectedImage === p.node.image.uri ? 0.5 : 1;
-              const first = i === 0 ? true : false;
-              return (
-                <CameraRollThumbnail
-                  first={first}
-                  key={i}
-                  opacity={opacity}
-                  source={p.node.image.uri}
-                  setSelectedImage={this.setSelectedImage}
-                />
-              );
-            })}
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <View style={{ flex: 1 }} />
+          <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+            <View style={{ borderWidth: 6, borderColor: 'rgba(0,0,0,.2)', height: 70, width: 70, borderRadius: 35, backgroundColor: 'white' }} />
           </View>
-      </ScrollView>
-    </View>
+          <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+            <Icon color="white" name="collections" size={30} />
+          </View>
+        </View>
+      </View>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return state;
-};
-
-export default connect(mapStateToProps)(Camera);
+export default Camera;
