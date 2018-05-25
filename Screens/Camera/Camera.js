@@ -10,24 +10,34 @@ import {
   Animated,
   Easing
 } from 'react-native';
-import { CameraKitCamera, CameraKitGalleryView } from 'react-native-camera-kit';
+import { CameraKitCamera } from 'react-native-camera-kit';
+import CameraRollPicker from './CameraRollPicker';
 import { Icon } from 'react-native-elements';
 
 class Camera extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cameraButtonPosition: new Animated.Value(60)
+      cameraButtonPosition: new Animated.Value(60),
+      cameraRollPosition: new Animated.Value(-135),
+      photos: []
     };
     this.toggleCameraButton = this.toggleCameraButton.bind(this);
   }
   toggleCameraButton() {
-    Animated.timing(                  // Animate over time
-      this.state.cameraButtonPosition,            // The animated value to drive
+    Animated.timing(
+      this.state.cameraButtonPosition,
       {
-        toValue: -100,
-        easing: Easing.bezier(.55,0,.1,1),               // Animate to opacity: 1 (opaque)
-        duration: 300,              // Make it take a while
+        toValue: this.state.cameraButtonPosition._value > 0 ? -100 : 60,
+        easing: Easing.bezier(0.55, 0, 0.1, 1),
+        duration: 300
+      }
+    ).start();
+    Animated.timing(
+      this.state.cameraRollPosition,
+      {
+        toValue: this.state.cameraRollPosition._value > 0 ? -135 : 40,
+        easing: Easing.bezier(0.55, 0, 0.1, 1)
       }
     ).start();
   }
@@ -60,6 +70,10 @@ class Camera extends Component {
           <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
             <TouchableOpacity onPress={this.toggleCameraButton}><Icon color="white" name="collections" size={30} /></TouchableOpacity>
           </View>
+        </Animated.View>
+        <Animated.View style={{ position: 'absolute', bottom: this.state.cameraRollPosition }}>
+          <TouchableOpacity onPress={this.toggleCameraButton}><Icon name="expand-more" type="material" color="white" size={30} /></TouchableOpacity>
+          <CameraRollPicker />
         </Animated.View>
       </View>
     );

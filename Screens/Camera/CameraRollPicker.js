@@ -39,16 +39,12 @@ class CameraRollPicker extends Component {
 
   render() {
     return (
-      <View style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Image
-          style={{
-            width: Dimensions.get('window').width,
-            flex: 1
-          }}
-          source={{ uri: this.state.selectedImage }}
-        />
-        <ScrollView>
-          <View style={{ display: 'flex', height: '100%', flexWrap: 'wrap', flex: 1, flexDirection: 'row' }}>
+        <ScrollView
+          contentContainerStyle={{ height: 115 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        >
+          <View style={{ display: 'flex', height: 115, width: '100%', flexDirection: 'row' }}>
             {this.state.photos.map((p, i) => {
               const opacity = this.state.selectedImage === p.node.image.uri ? 0.5 : 1;
               const first = i === 0 ? true : false;
@@ -64,7 +60,6 @@ class CameraRollPicker extends Component {
             })}
           </View>
         </ScrollView>
-      </View>
     );
   }
 }

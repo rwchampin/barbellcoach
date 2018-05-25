@@ -21,8 +21,11 @@ class CameraRollThumbnail extends Component {
         <Image
           style={{
             opacity: this.props.opacity,
-            width: Dimensions.get('window').width / 4,
-            height: Dimensions.get('window').width / 4
+            width: 75,
+            height: 100,
+            borderRadius: 8,
+            marginLeft: 3,
+            marginRight: 3
           }}
           source={{ uri: this.props.source }}
         />
