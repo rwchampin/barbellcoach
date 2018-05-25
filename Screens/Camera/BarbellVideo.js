@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import Video from 'react-native-video';
 
 class BarbellVideo extends Component {
+  constructor(props) {
+    super(props);
+    this.onEnd = this.onEnd.bind(this);
+  }
+  onEnd() {
+    
+  }
   render() {
     return (
       <Video
@@ -21,7 +28,7 @@ class BarbellVideo extends Component {
         ignoreSilentSwitch={"ignore"}           // [iOS] ignore | obey - When 'ignore', audio will still play with the iOS hard silent switch set to silent. When 'obey', audio will toggle with the switch. When not specified, will inherit audio settings as usual.
         progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
         onBuffer={this.onBuffer}                // Callback when remote video is buffering
-        // onEnd={this.onEnd}                      // Callback when playback finishes
+        onEnd={this.onEnd}                      // Callback when playback finishes
         onError={this.videoError}               // Callback when video cannot be loaded
         // onFullscreenPlayerWillPresent={this.fullScreenPlayerWillPresent} // Callback before fullscreen starts
         // onFullscreenPlayerDidPresent={this.fullScreenPlayerDidPresent}   // Callback after fullscreen started
@@ -29,7 +36,7 @@ class BarbellVideo extends Component {
         // onFullscreenPlayerDidDismiss={this.fullScreenPlayerDidDissmiss}  // Callback after fullscreen stopped
         // onLoadStart={this.loadStart}            // Callback when video starts to load
         // onLoad={this.setDuration}               // Callback when video loads
-        onProgress={this.setTime} // Callback every ~250ms with currentTime
+        // onProgress={this.setTime} // Callback every ~250ms with currentTime
         // onTimedMetadata={this.onTimedMetadata}  // Callback when the stream receive some metadata
         style={{ height: '100%', width: '100%' }}
       />

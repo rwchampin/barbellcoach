@@ -33,7 +33,7 @@ class CameraRollPicker extends Component {
     this.setState({
       selectedImage: selectedImage
     });
-    // this.props.setPostImage(selectedImage);
+    this.props.chooseVideo(selectedImage);
   }
 
   render() {
@@ -49,7 +49,6 @@ class CameraRollPicker extends Component {
               const first = i === 0 ? true : false;
               return (
                 <CameraRollThumbnail
-                  first={first}
                   key={i}
                   opacity={opacity}
                   source={p.node.image.uri}

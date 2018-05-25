@@ -6,11 +6,6 @@ import {
 } from 'react-native';
 
 class CameraRollThumbnail extends Component {
-  componentDidMount() {
-    if (this.props.first) {
-      this.props.setSelectedImage(this.props.source);
-    }
-  }
   render() {
     return (
       <TouchableOpacity
