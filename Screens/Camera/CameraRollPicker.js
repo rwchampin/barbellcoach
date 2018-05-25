@@ -7,7 +7,6 @@ import {
   Image,
   Dimensions
 } from 'react-native';
-import { CameraKitCamera, CameraKitGalleryView } from 'react-native-camera-kit';
 import CameraRollThumbnail from './CameraRollThumbnail';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
