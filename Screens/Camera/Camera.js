@@ -14,6 +14,7 @@ import { RNCamera, FaceDetector } from 'react-native-camera';
 import CameraRollPicker from './CameraRollPicker';
 import { Icon } from 'react-native-elements';
 import BarbellVideo from './BarbellVideo';
+import CameraToolbarTop from './CameraToolbarTop';
 
 class Camera extends Component {
   static renderAsset(asset) {
@@ -38,7 +39,7 @@ class Camera extends Component {
       asset: null,
     };
     this.recordingTimeout = null;
-    this.chooseVideo = this.chooseVideo.bind(this);
+    this.setAsset = this.setAsset.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.toggleCameraButton = this.toggleCameraButton.bind(this);
     this.timer = this.timer.bind(this);
@@ -62,7 +63,7 @@ class Camera extends Component {
     ).start();
   }
 
-  chooseVideo(asset) {
+  setAsset(asset) {
     this.setState({
       asset: asset
     });
@@ -128,20 +129,12 @@ class Camera extends Component {
         permissionDialogMessage={'We need your permission to use your camera phone'}
       />
     );
-    const closeOrGoBack = this.state.asset ? (
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-        <TouchableOpacity onPress={() => { this.setState({ asset: null }) }}><Icon name="chevron-left" type="material" color="white" size={30} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.setState({ video: null }) }}><View style={{ display: 'flex', flexDirection: 'row', height: 30, width: 80, borderRadius: 18, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontWeight: 'bold' }}>NEXT</Text></View></TouchableOpacity>
-      </View>
-    ) : (
-      <TouchableOpacity onPress={() => { this.props.navigation.goBack(null); }}><Icon name="close" type="material" color="white" /></TouchableOpacity>
-    );
     return (
       <View
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'column', height: '100%', width: '100%' }}
       >
         <View style={{ paddingLeft: 20, paddingRight: 20, display: 'flex', justifyContent: 'flex-start', flexDirection: 'row', width: '100%', position: 'absolute', top: 50, zIndex: 100 }}>
-          {closeOrGoBack}
+          <CameraToolbarTop navigation={this.props.navigation} setAsset={this.setAsset} asset={this.state.asset} />
         </View>
         {asset}
         <Animated.View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: this.state.cameraButtonPosition }}>
@@ -163,7 +156,7 @@ class Camera extends Component {
         </Animated.View>
         <Animated.View style={{ position: 'absolute', bottom: this.state.cameraRollPosition }}>
           <TouchableOpacity onPress={this.toggleCameraButton}><Icon name="expand-more" type="material" color="white" size={30} /></TouchableOpacity>
-          <CameraRollPicker chooseVideo={this.chooseVideo} />
+          <CameraRollPicker setAsset={this.setAsset} />
         </Animated.View>
       </View>
     );

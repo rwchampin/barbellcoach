@@ -33,7 +33,7 @@ class CameraRollPicker extends Component {
     this.setState({
       selectedImage: selectedImage
     });
-    this.props.chooseVideo(selectedImage);
+    this.props.setAsset(selectedImage);
   }
 
   render() {
