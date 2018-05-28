@@ -10,7 +10,7 @@ class ProfileHeaderSection extends Component {
     return (
       <View style={{ marginTop: 25, marginBottom: 25, display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Image
-          style={{ height: 110, width: 110, borderRadius: 55 }}
+          style={{ height: 130, width: 130, borderRadius: 65 }}
           resizeMode="cover"
           source={{ uri: this.props.user.avatar }}
         />

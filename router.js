@@ -11,6 +11,7 @@ import { SearchNavigator } from './Screens/Search/SearchNavigator';
 import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
 import ChooseLift from './Screens/Coach/ChooseLift';
 import TabBar from './TabBar';
+import AddPostContent from './Screens/Post/AddPostContent';
 
 const AuthNavigator = () => {
   const SignUpNavigator = createStackNavigator({
@@ -51,6 +52,10 @@ const CaptureStack = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       header: null
     })
+  },
+  AddPostContent: {
+    name: 'AddPostContent',
+    screen: AddPostContent
   }
 });
 

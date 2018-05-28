@@ -3,7 +3,6 @@ import firebase from 'react-native-firebase';
 import {
   Text,
   View,
-  TouchableOpacity,
   ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -42,27 +41,29 @@ class Profile extends Component {
     this.setState({
       loading: true
     });
-    const posts = [];
-    const ref = firebase.firestore().collection('posts');
-    ref.where('user', '==', this.props.AuthReducer.user.userProfile.uid).get()
-      .then((snapshot) => {
-        snapshot.forEach((post) => {
-          posts.push(post.data());
-        });
-        this.setState({
-          loading: false,
-          posts: posts
-        });
+
+    const doc = firebase.firestore().collection('posts').where('user', '==', this.props.AuthReducer.user.userProfile.uid);
+    const that = this;
+    doc.onSnapshot((snapshot) => {
+      const posts = [];
+      snapshot.forEach((post) => {
+        posts.push(post.data());
       });
+      that.setState({
+        loading: false,
+        posts: posts
+      });
+    });
   }
 
   render() {
+    console.log('wtf', this.state.posts);
     const tabRoutes = [
       { key: '1', title: 'Lifts' },
       { key: '2', title: 'Feed' }
     ];
     const routeMap = {
-      '1': () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.state.posts} />,
+      '1': () => <PostGrid postDetailDestination="ProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />,
       '2': () => <Programs />
     };
     if (this.state.loading) {

@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Picker,
-  TextInput
+  TextInput,
+  Platform
 } from 'react-native';
 import {
   Slider,
@@ -14,11 +15,12 @@ import {
 import RNFetchBlob from 'react-native-fetch-blob';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
+import BarbellVideo from '../Camera/BarbellVideo';
 
 class AddPostContent extends Component {
   static uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getR + + ndomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
   static navigationOptions({ navigation }) {
@@ -31,14 +33,39 @@ class AddPostContent extends Component {
     }}>
     <Text style={{ marginRight: 20 }}>Post Lift</Text></TouchableOpacity> });
   }
+  static renderAsset(asset) {
+    if (asset.indexOf('mov') > 0) {
+      return (
+        <View style={{
+          height: 60,
+          width: 60,
+          margin: 15
+        }}
+        >
+          <BarbellVideo video={asset} />
+        </View>
+      );
+    }
+    return (
+      <Image
+        style={{
+          height: 60,
+          width: 60,
+          margin: 15,
+          resizeMode: 'contain'
+        }}
+        source={{ uri: asset }}
+      />
+    );
+  }
   constructor(props) {
     super(props);
     this.state = {
       liftDescription: null,
       liftType: "Bench",
       rpe: 5,
-      postImage:  props.navigation.state.params.postImage ? this.props.navigation.state.params.postImage : 'https://placeimg.com/640/480/any'
-    }
+      postAsset: props.navigation.state.params.postAsset ? this.props.navigation.state.params.postAsset : 'https://placeimg.com/640/480/any'
+    };
     this.savePost = this.savePost.bind(this);
     this.addFileToUser = this.addFileToUser.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
@@ -46,59 +73,69 @@ class AddPostContent extends Component {
   componentWillMount() {
     this.props.navigation.setParams({ postLift: () => {
       this.savePost();
-    }});
+    } });
   }
 
-  addFileToUser(imageUrl) {
-    const that = this;
+  addFileToUser(assetUrl) {
     const post = {
-      user: this.props.AuthReducer.user.data().uid,
-      imageUrl: imageUrl,
+      user: this.props.AuthReducer.user.userRef.data().uid,
+      assetUrl: assetUrl,
+      assetType: this.props.navigation.state.params.postAssetType,
       liftDescription: this.state.liftDescription,
       liftType: this.state.liftType,
       rpe: this.state.rpe
-    }
+    };
 
     const ref = firebase.firestore().collection('posts');
-    ref.add(post).then(() => {
-      that.props.navigation.navigate('Profile');
-    }).error((err) => {
-      alert('ERROR::' + err);
-    });
-
+    ref.add(post);
   }
+
   uploadFile(blob) {
-     const uid = this.props.AuthReducer.user.data().uid;
-     const hash = AddPostContent.uuidv4();
-     const that = this;
+    const { uid } = this.props.AuthReducer.user.userRef.data();
+    const hash = AddPostContent.uuidv4();
+    const metadata = {
+      contentType: 'video/quicktime',
+      contentDisposition: ''
+    };
+    firebase.storage()
+      .ref(`${uid}/${hash}`)
+      .putFile(blob.blobPath, metadata)
+      .then((uploadedFile) => {
+        this.addFileToUser(uploadedFile.downloadURL);
+      });
+  }
 
-     firebase.storage()
-       .ref(`${uid}/${hash}`)
-       .putFile(blob.blobPath)
-       .then(uploadedFile => {
-         this.addFileToUser(uploadedFile.downloadURL);
-       })
-       .catch(err => {
-           //Error
-
-       });
-   }
-  savePost() {
-    const Blob = RNFetchBlob.polyfill.Blob;
-    const fs = RNFetchBlob.fs;
+  async savePost() {
+    this.props.navigation.navigate('Profile');
+    const { Blob } = RNFetchBlob.polyfill;
+    const { fs } = RNFetchBlob;
     const that = this;
-    fs.readFile(this.props.navigation.state.params.postImage, 'base64')
+    // console.log('here', this.props.navigation.state.params.postAsset);
+    let filePath = null;
+    const audioDataUri = null;
+    if (Platform.OS === 'ios') {
+      const arr = this.props.navigation.state.params.postAsset.split('/');
+      const { dirs } = RNFetchBlob.fs;
+      filePath = `${dirs.CacheDir}/Camera/${arr[arr.length - 1]}`;
+    } else {
+      filePath = audioDataUri;
+    }
+    fs.readFile(filePath, 'base64')
       .then((data) => {
-        return Blob.build(data, {type: 'image/jpg;BASE64'})
+        return Blob.build(data, { type: 'video/quicktime;BASE64' });
       })
       .then((blob) => {
-        that.uploadFile(blob)
-      })
+        that.uploadFile(blob);
+      }).catch((err) => {
+        console.log(err.message, err.code);
+      });
   }
   render() {
+    const asset = AddPostContent.renderAsset(this.state.postAsset);
     return (
       <View style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <View style={{ display: 'flex', flexDirection: 'row' }}>
+          { asset }
           <Image
             style={{
               height: 60,

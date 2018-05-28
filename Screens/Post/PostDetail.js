@@ -3,10 +3,12 @@ import {
   Image,
   View,
   Text,
-  Dimensions
+  Dimensions,
+  TouchableWithoutFeedback
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Rating } from 'react-native-elements';
+import BarbellVideo from '../Camera/BarbellVideo';
 
 class PostDetail extends Component {
   static navigationOptions({ navigation }) {
@@ -17,8 +19,10 @@ class PostDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: ''
+      user: '',
+      mute: true
     };
+    this.toggleMute = this.toggleMute.bind(this);
   }
   componentDidMount() {
     const ref = firebase.firestore().collection('userProfiles');
@@ -30,6 +34,11 @@ class PostDetail extends Component {
       });
     });
   }
+  toggleMute() {
+    this.setState({
+      mute: !this.state.mute
+    });
+  }
   render() {
     if (!this.state.user) {
       return <Text>Loading...</Text>;
@@ -37,11 +46,15 @@ class PostDetail extends Component {
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <View style={{ padding: 10, backgroundColor: 'white', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Image resizeMode="cover" style={{ height: 25, width: 25, borderRadius: 12.5 }} source={{ uri: this.state.user.avatar }} />
-          <Text style={{ marginLeft: 10 }}>{this.state.user.firstName}</Text>
-          <Text style={{ marginLeft: 5 }}>{this.state.user.lastName}</Text>
+          <Image resizeMode="cover" style={{ height: 35, width: 35, borderRadius: 17.5 }} source={{ uri: this.state.user.avatar }} />
+          <Text style={{ fontWeight: 'bold', marginLeft: 10 }}>{this.state.user.firstName}</Text>
+          <Text style={{ fontWeight: 'bold', marginLeft: 5 }}>{this.state.user.lastName}</Text>
         </View>
-        <Image resizeMode="cover" style={{ height: Dimensions.get('window').width, width: Dimensions.get('window').width }} source={{ uri: this.props.navigation.state.params.post.imageUrl }} />
+        <View style={{ height: Dimensions.get('window').width, width: Dimensions.get('window').width }}>
+          <TouchableWithoutFeedback onPress={this.toggleMute}>
+            <BarbellVideo video={this.props.navigation.state.params.post.assetUrl} mute={this.state.mute} />
+          </TouchableWithoutFeedback>
+        </View>
         <Rating
           ratingBackgroundColor="#e6e6e6"
           readonly

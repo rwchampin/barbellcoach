@@ -11,7 +11,10 @@ class CameraToolbarTop extends Component {
     const closeOrGoBack = this.props.asset ? (
       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
         <TouchableOpacity onPress={() => { this.props.setAsset(null); }}><Icon name="chevron-left" type="material" color="white" size={30} /></TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.props.setAsset(null); }}>
+        <TouchableOpacity onPress={() => { this.props.navigation.navigate('AddPostContent', {
+          postAsset: this.props.asset,
+          postAssetType: this.props.assetType
+        }); }}>
           <View style={{ display: 'flex', flexDirection: 'row', height: 30, width: 80, borderRadius: 18, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ fontWeight: 'bold' }}>NEXT</Text>
           </View>

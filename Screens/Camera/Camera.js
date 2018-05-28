@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
+import { Icon } from 'react-native-elements';
 import {
   Text,
-  CameraRoll,
-  ScrollView,
   View,
   Image,
-  Dimensions,
   TouchableOpacity,
   Animated,
   Easing
 } from 'react-native';
-import { RNCamera, FaceDetector } from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import CameraRollPicker from './CameraRollPicker';
-import { Icon } from 'react-native-elements';
 import BarbellVideo from './BarbellVideo';
 import CameraToolbarTop from './CameraToolbarTop';
 
@@ -23,7 +20,7 @@ class Camera extends Component {
     }
     return (
       <Image
-        style={{ height: '100%', width: '100%', resizeMode: 'cover' }}
+        style={{ height: '100%', width: '100%', resizeMode: 'contain' }}
         source={{ uri: asset }}
       />
     );
@@ -37,13 +34,21 @@ class Camera extends Component {
       recording: false,
       recordingTime: 1,
       asset: null,
+      assetType: null
     };
     this.recordingTimeout = null;
     this.setAsset = this.setAsset.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
     this.toggleCameraButton = this.toggleCameraButton.bind(this);
-    this.timer = this.timer.bind(this);
   }
+
+  setAsset(asset, assetType) {
+    this.setState({
+      asset: asset,
+      assetType: assetType
+    });
+  }
+
   toggleCameraButton() {
     Animated.timing(
       this.state.cameraButtonPosition,
@@ -63,57 +68,19 @@ class Camera extends Component {
     ).start();
   }
 
-  setAsset(asset) {
-    this.setState({
-      asset: asset
-    });
-  }
-
   async toggleRecording() {
     this.setState({
       recording: !this.state.recording
     });
     if (!this.state.recording) {
-      this.timer('start');
       const video = await this.camera.recordAsync();
       this.setState({
-        asset: video.uri
+        asset: video.uri,
+        assetType: 'video'
       });
     } else {
-      this.timer('stop');
       this.camera.stopRecording();
     }
-  }
-
-  timer(startStop) {
-    // if (startStop === 'start') {
-    //   Animated.timing(
-    //     this.state.cameraTimerOpacity,
-    //     {
-    //       toValue: 1,
-    //       easing: Easing.bezier(0.55, 0, 0.1, 1),
-    //       duration: 300
-    //     }
-    //   ).start();
-    //   this.recordingTimeout = setInterval(() => {
-    //     this.setState({
-    //       recordingTime: this.state.recordingTime + 1
-    //     });
-    //   }, 1000);
-    // } else {
-    //   Animated.timing(
-    //     this.state.cameraTimerOpacity,
-    //     {
-    //       toValue: 0,
-    //       easing: Easing.bezier(0.55, 0, 0.1, 1),
-    //       duration: 300
-    //     }
-    //   ).start();
-    //   clearInterval(this.recordingTimeout);
-    //   this.setState({
-    //     recordingTime: 0.00
-    //   });
-    // }
   }
 
   render() {
@@ -134,7 +101,12 @@ class Camera extends Component {
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', flexDirection: 'column', height: '100%', width: '100%' }}
       >
         <View style={{ paddingLeft: 20, paddingRight: 20, display: 'flex', justifyContent: 'flex-start', flexDirection: 'row', width: '100%', position: 'absolute', top: 50, zIndex: 100 }}>
-          <CameraToolbarTop navigation={this.props.navigation} setAsset={this.setAsset} asset={this.state.asset} />
+          <CameraToolbarTop
+            navigation={this.props.navigation}
+            setAsset={this.setAsset}
+            asset={this.state.asset}
+            assetType={this.state.assetType}
+          />
         </View>
         {asset}
         <Animated.View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: this.state.cameraButtonPosition }}>
