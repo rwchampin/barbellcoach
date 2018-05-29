@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import {
-  Text,
   View,
   Image,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import { RNCamera } from 'react-native-camera';
 import CameraRollPicker from './CameraRollPicker';
 import BarbellVideo from './BarbellVideo';
 import CameraToolbarTop from './CameraToolbarTop';
+import CameraToolbarBottom from './CameraToolbarBottom';
 
 class Camera extends Component {
   static renderAsset(asset) {
@@ -30,9 +30,7 @@ class Camera extends Component {
     this.state = {
       cameraButtonPosition: new Animated.Value(60),
       cameraRollPosition: new Animated.Value(-135),
-      cameraTimerOpacity: new Animated.Value(0),
       recording: false,
-      recordingTime: 1,
       asset: null,
       assetType: null
     };
@@ -109,23 +107,11 @@ class Camera extends Component {
           />
         </View>
         {asset}
-        <Animated.View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: this.state.cameraButtonPosition }}>
-          <View style={{ flex: 1 }} />
-          <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-            <Animated.View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', position: 'relative', top: -10, opacity: this.state.cameraTimerOpacity }}>
-              <View style={{ height: 8, width: 8, borderRadius: 4, backgroundColor: 'red'}}></View>
-              <Text style={{ color: 'white', fontSize: 10, marginLeft: 3 }}>{this.state.recordingTime}</Text>
-            </Animated.View>
-            <TouchableOpacity onPress={this.toggleRecording}>
-              <View style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', borderWidth: 6, borderColor: 'rgba(0,0,0,.2)', height: 70, width: 70, borderRadius: 35, backgroundColor: 'white' }}>
-                <View style={{ height: 10, width: 10, borderRadius: 5, backgroundColor: 'red' }} />
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
-            <TouchableOpacity onPress={this.toggleCameraButton}><Icon color="white" name="collections" size={30} /></TouchableOpacity>
-          </View>
-        </Animated.View>
+        <CameraToolbarBottom
+          toggleRecording={this.toggleRecording}
+          toggleCameraButton={this.toggleCameraButton}
+          cameraButtonPosition={this.state.cameraButtonPosition}
+        />
         <Animated.View style={{ position: 'absolute', bottom: this.state.cameraRollPosition }}>
           <TouchableOpacity onPress={this.toggleCameraButton}><Icon name="expand-more" type="material" color="white" size={30} /></TouchableOpacity>
           <CameraRollPicker setAsset={this.setAsset} />

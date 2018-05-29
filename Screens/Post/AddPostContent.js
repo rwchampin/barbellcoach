@@ -64,6 +64,8 @@ class AddPostContent extends Component {
       liftDescription: null,
       liftType: "Bench",
       rpe: 5,
+      postAssetType: props.navigation.state.params.postAssetType,
+      mimeType: props.navigation.state.params.postAssetType === 'video' ? 'video/quicktime' : 'image/jpeg',
       postAsset: props.navigation.state.params.postAsset ? this.props.navigation.state.params.postAsset : 'https://placeimg.com/640/480/any'
     };
     this.savePost = this.savePost.bind(this);
@@ -80,7 +82,7 @@ class AddPostContent extends Component {
     const post = {
       user: this.props.AuthReducer.user.userRef.data().uid,
       assetUrl: assetUrl,
-      assetType: this.props.navigation.state.params.postAssetType,
+      assetType: this.state.postAssetType,
       liftDescription: this.state.liftDescription,
       liftType: this.state.liftType,
       rpe: this.state.rpe
@@ -94,7 +96,7 @@ class AddPostContent extends Component {
     const { uid } = this.props.AuthReducer.user.userRef.data();
     const hash = AddPostContent.uuidv4();
     const metadata = {
-      contentType: 'video/quicktime',
+      contentType: this.state.mimeType,
       contentDisposition: ''
     };
     firebase.storage()
@@ -110,19 +112,20 @@ class AddPostContent extends Component {
     const { Blob } = RNFetchBlob.polyfill;
     const { fs } = RNFetchBlob;
     const that = this;
-    // console.log('here', this.props.navigation.state.params.postAsset);
-    let filePath = null;
-    const audioDataUri = null;
-    if (Platform.OS === 'ios') {
-      const arr = this.props.navigation.state.params.postAsset.split('/');
-      const { dirs } = RNFetchBlob.fs;
-      filePath = `${dirs.CacheDir}/Camera/${arr[arr.length - 1]}`;
-    } else {
-      filePath = audioDataUri;
+    let filePath = this.props.navigation.state.params.postAsset;
+    if (this.state.postAssetType === 'video') {
+      const audioDataUri = null;
+      if (Platform.OS === 'ios') {
+        const arr = filePath.split('/');
+        const { dirs } = RNFetchBlob.fs;
+        filePath = `${dirs.CacheDir}/Camera/${arr[arr.length - 1]}`;
+      } else {
+        filePath = audioDataUri;
+      }
     }
     fs.readFile(filePath, 'base64')
       .then((data) => {
-        return Blob.build(data, { type: 'video/quicktime;BASE64' });
+        return Blob.build(data, { type: `${this.state.mimeType};BASE64` });
       })
       .then((blob) => {
         that.uploadFile(blob);

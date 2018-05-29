@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  CameraRoll,
-  ScrollView,
-  View,
-  Image,
-  Dimensions
-} from 'react-native';
-import CameraRollThumbnail from './CameraRollThumbnail';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
+import {
+  CameraRoll,
+  ScrollView,
+  View
+} from 'react-native';
+import CameraRollThumbnail from './CameraRollThumbnail';
 
 class CameraRollPicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
       photos: [],
-      selectedImage: '',
-      userProfileRef: firebase.firestore().collection('userProfiles')
+      selectedImage: ''
     };
     this.setSelectedImage = this.setSelectedImage.bind(this);
   }
@@ -33,31 +29,28 @@ class CameraRollPicker extends Component {
     this.setState({
       selectedImage: selectedImage
     });
-    this.props.setAsset(selectedImage);
+    this.props.setAsset(selectedImage, 'image');
   }
 
   render() {
     return (
-        <ScrollView
-          contentContainerStyle={{ height: 115 }}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        >
-          <View style={{ display: 'flex', height: 115, width: '100%', flexDirection: 'row' }}>
-            {this.state.photos.map((p, i) => {
-              const opacity = this.state.selectedImage === p.node.image.uri ? 0.5 : 1;
-              const first = i === 0 ? true : false;
-              return (
-                <CameraRollThumbnail
-                  key={i}
-                  opacity={opacity}
-                  source={p.node.image.uri}
-                  setSelectedImage={this.setSelectedImage}
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
+      <ScrollView
+        contentContainerStyle={{ height: 115 }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={{ display: 'flex', height: 115, width: '100%', flexDirection: 'row' }}>
+          {this.state.photos.map((p, i) => {
+            return (
+              <CameraRollThumbnail
+                key={i}
+                source={p.node.image.uri}
+                setSelectedImage={this.setSelectedImage}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
     );
   }
 }

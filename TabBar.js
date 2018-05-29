@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 
-const activeTintColor = '#3478f6';
+const activeTintColor = '#000000';
 const inactiveTintColor = '#929292';
 const styles = StyleSheet.create({
   tabBar: {
@@ -33,21 +33,31 @@ class TabBar extends Component {
       avatar: ''
     }
     this.renderItem = this.renderItem.bind(this);
+    this.renderIcon = this.renderIcon.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       avatar: nextProps.AuthReducer.user.userProfile.avatar
     });
   }
-  renderItem(route, index) {
-    const icons = {
-      'Search': <Icon name="search" size={35} color={'#000000'} />,
-      'Profile': this.state.avatar ? <Image style={{ height: 30, width: 30, borderRadius:15 }} source={{ uri: this.state.avatar }} /> : <View style={{ height:30, width: 30, borderRadius: 15, backgroundColor: 'grey' }} />,
-      'Notifications': <Icon name="list" size={35} color={'#000000'} />,
-      'Landing': <Icon name="people" size={35} color={'#000000'} />,
-      'Capture': <Icon name="camera" size={35} color={'#000000'} />
+  renderIcon(route, focused) {
+    const color = focused ? activeTintColor : inactiveTintColor;
+    const profileStyle = { height: 30, width: 30, borderRadius: 15 };
+    if (route === 'Profile' && focused) {
+      profileStyle.borderWidth = 1;
     }
+    const icons = {
+      'Search': <Icon name="search" size={35} color={color} />,
+      'Profile': this.state.avatar ? <Image style={profileStyle} source={{ uri: this.state.avatar }} /> : <View style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }} />,
+      'Notifications': <Icon name="list" size={35} color={color} />,
+      'Landing': <Icon name="people" size={35} color={color} />,
+      'Capture': <Icon name="camera" size={35} color={color} />
+    };
 
+    return icons[route];
+  }
+
+  renderItem(route, index) {
     const {
       navigation,
       jumpToIndex
@@ -56,7 +66,6 @@ class TabBar extends Component {
     const isCapture = route.routeName === 'Capture';
 
     const focused = index === navigation.state.index;
-    const color = focused ? activeTintColor : inactiveTintColor;
 
     return (
       <TouchableWithoutFeedback
@@ -65,7 +74,7 @@ class TabBar extends Component {
         onPress={() => isCapture ? navigation.navigate('CaptureModal') : jumpToIndex(index)}
       >
         <View style={styles.tab}>
-          {icons[route.routeName]}
+          { this.renderIcon(route.routeName, focused) }
         </View>
       </TouchableWithoutFeedback>
     );

@@ -82,19 +82,11 @@ const ChooseLiftStack = createStackNavigator({
 const createTabNavigator = (user) => {
   const landing = user.user.data().userType === 'client' ? (
     {
-      screen: CoachNavigator,
-      navigationOptions: {
-        tabBarLabel: 'Training',
-        tabBarIcon: ({ tintColor }) => <Icon name="people" size={35} color={tintColor} />
-      }
+      screen: CoachNavigator
     }
   ) : (
     {
-      screen: CoachNavigator,
-      navigationOptions: {
-        tabBarLabel: 'Clients',
-        tabBarIcon: ({ tintColor }) => <Icon name="people" size={35} color={tintColor} />
-      }
+      screen: CoachNavigator
     }
   );
 

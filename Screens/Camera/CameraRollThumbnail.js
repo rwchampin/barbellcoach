@@ -15,7 +15,6 @@ class CameraRollThumbnail extends Component {
       >
         <Image
           style={{
-            opacity: this.props.opacity,
             width: 75,
             height: 100,
             borderRadius: 8,
