@@ -21,18 +21,18 @@ class Search extends Component {
     this.state = {
       clients: [],
       user: {
-        user: '',//props.screenProps.user,
-        userType: '',//props.screenProps.user.data().userType,
-        uid: ''//props.screenProps.user.data().uid
+        user: '', // props.screenProps.user,
+        userType: '', // props.screenProps.user.data().userType,
+        uid: '' // props.screenProps.user.data().uid
       }
     };
   }
   componentDidMount() {
     const dbUserRef = firebase.firestore().collection('userProfiles');
     const clients = [];
-    const opposite = this.state.user.userType === 'client' ? 'coach' : 'client';
+    // const opposite = this.state.user.userType === 'client' ? 'coach' : 'client';
     dbUserRef
-      .where('userType', '==', opposite)
+      // .where('userType', '==', opposite)
       .get().then((snapshot) => {
         snapshot.forEach((doc) => {
           const client = doc.data();

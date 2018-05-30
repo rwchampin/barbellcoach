@@ -19,10 +19,13 @@ class ClientProfile extends Component {
     const params = navigation.state.params || {};
     const headerTitle = params.client.firstName;
     console.log(params)
-    return ({
-      headerTitle: headerTitle,
-      headerRight: <View style={{ marginRight: 10 }}><TouchableOpacity onPress={params.goToCreatePrograms}><Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>
-    });
+    const header = {
+      headerTitle: headerTitle
+    };
+    if (params.client.coach === params.user) {
+      header.headerRight = <View style={{ marginRight: 10 }}><TouchableOpacity onPress={params.goToCreatePrograms}><Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>;
+    }
+    return header;
   }
 
   constructor(props) {
@@ -35,7 +38,10 @@ class ClientProfile extends Component {
   }
 
   componentWillMount() {
-    this.props.navigation.setParams({ goToCreatePrograms: this.goToCreatePrograms });
+    this.props.navigation.setParams({
+      user: this.props.AuthReducer.user.userProfile.uid,
+      goToCreatePrograms: this.goToCreatePrograms
+    });
   }
 
   componentDidMount() {
