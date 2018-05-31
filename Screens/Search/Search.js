@@ -39,11 +39,12 @@ class Search extends Component {
           const client = doc.data();
           let invited = false;
           notificationsRef
-            .where('fromUser.uid', '==', this.props.AuthReducer.user.userProfile.uid)
+            .where('fromUser/uid', '==', this.props.AuthReducer.user.userProfile.uid)
             .where('toUserUid', '==', client.uid)
             .get()
             .then((notificationSnapshot) => {
               notificationSnapshot.forEach((notification) => {
+                debugger;
                 if (notification.data().type === 'coachInvite') {
                   invited = true;
                 }
