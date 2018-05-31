@@ -3,7 +3,8 @@ import firebase from 'react-native-firebase';
 import {
   Text,
   View,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import TabSections from '../Common/TabSections';
@@ -21,7 +22,7 @@ class Profile extends Component {
     const title = navigation.state.params ? params.user.firstName + ' ' + params.user.lastName : '';
     return ({
       headerTitle: title,
-      headerRight: <View style={{ marginRight: 10 }}><Icon name="dots-three-horizontal" type="entypo" size={20} color={'#000000'} style={{ marginRight: 10 }} /></View>
+      headerRight: <View style={{ marginRight: 10 }}><TouchableOpacity onPress={() => {navigation.navigate('ProfileUtilities');}}><Icon name="dots-three-horizontal" type="entypo" size={20} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>
     });
   }
   constructor(props) {

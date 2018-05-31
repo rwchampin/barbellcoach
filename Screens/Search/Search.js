@@ -20,22 +20,36 @@ class Search extends Component {
     super(props);
     this.state = {
       clients: [],
+      searchString: '',
       user: {
         user: '', // props.screenProps.user,
         userType: '', // props.screenProps.user.data().userType,
         uid: '' // props.screenProps.user.data().uid
       }
     };
+    this.updateSearchResults = this.updateSearchResults.bind(this);
   }
   componentDidMount() {
     const dbUserRef = firebase.firestore().collection('userProfiles');
+    const notificationsRef = firebase.firestore().collection('notifications');
     const clients = [];
-    // const opposite = this.state.user.userType === 'client' ? 'coach' : 'client';
     dbUserRef
-      // .where('userType', '==', opposite)
       .get().then((snapshot) => {
         snapshot.forEach((doc) => {
           const client = doc.data();
+          let invited = false;
+          notificationsRef
+            .where('fromUser.uid', '==', this.props.AuthReducer.user.userProfile.uid)
+            .where('toUserUid', '==', client.uid)
+            .get()
+            .then((notificationSnapshot) => {
+              notificationSnapshot.forEach((notification) => {
+                if (notification.data().type === 'coachInvite') {
+                  invited = true;
+                }
+                client.invited = invited;
+              });
+            });
           clients.push(client);
         });
         this.setState({
@@ -50,13 +64,17 @@ class Search extends Component {
   async inviteClient(clientUid) {
     const dbUserRef = firebase.firestore().collection('notifications');
     const notification = {
-      fromUser: this.state.user.uid,
+      fromUser: this.props.AuthReducer.user.userProfile,
       opened: false,
       toUserUid: clientUid,
       type: this.state.user.userType === 'coach' ? 'clientInvite' : 'coachInvite',
-      message: "Hey man, I want to be your coach.  Blah blah blah"
+      message: 'Hey man, I want to be your coach.  Blah blah blah'
     };
     dbUserRef.add(notification);
+  }
+
+  updateSearchResults(searchString) {
+    this.setState({ searchString });
   }
 
   render() {
@@ -66,9 +84,16 @@ class Search extends Component {
         <SearchBar
           round
           darkTheme
+          onChangeText={this.updateSearchResults}
         />
         <View>
           {this.state.clients.map((client, i) => {
+            if (client.firstName.indexOf(this.state.searchString) < 0) {
+              return null;
+            }
+            const isClient = client.coach === this.props.AuthReducer.user.userProfile.uid;
+            const isInvited = client.invited ? 'Invited' : 'Invite';
+            const button = isClient ? 'Coaching' : isInvited;
             return (
               <ListItem
                 title={client.firstName}
@@ -82,14 +107,15 @@ class Search extends Component {
                       that.inviteClient(client.uid);
                     }}
                   >
-                    <View style={{ borderWidth: 1, borderRadius: 6, borderColor: 'black', padding: 6}}>
-                      <Text>Invite</Text>
+                    <View style={{ borderWidth: 1, borderRadius: 6, borderColor: 'black', padding: 6 }}>
+                      <Text>{button}</Text>
                     </View>
                   </TouchableOpacity>
                 }
                 onPress={() => {
                   this.props.navigation.navigate('VisitingProfile', {
-                    client: client
+                    client: client,
+                    isClient: isClient
                   });
                 }}
               />

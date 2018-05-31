@@ -18,11 +18,11 @@ class ClientProfile extends Component {
   static navigationOptions({ navigation }) {
     const params = navigation.state.params || {};
     const headerTitle = params.client.firstName;
-    console.log(params)
+
     const header = {
       headerTitle: headerTitle
     };
-    if (params.client.coach === params.user) {
+    if (params.isClient) {
       header.headerRight = <View style={{ marginRight: 10 }}><TouchableOpacity onPress={params.goToCreatePrograms}><Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>;
     }
     return header;
@@ -31,8 +31,7 @@ class ClientProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: [],
-      modalVisible: false
+      posts: []
     };
     this.goToCreatePrograms = this.goToCreatePrograms.bind(this);
   }

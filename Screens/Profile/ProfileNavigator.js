@@ -1,6 +1,7 @@
-import { StackNavigator, createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import Profile from './Profile';
 import PostDetail from '../Post/PostDetail';
+import ProfileUtilities from './ProfileUtilities';
 
 export const ProfileNavigator = createStackNavigator(
   {
@@ -10,6 +11,10 @@ export const ProfileNavigator = createStackNavigator(
     ProfilePostDetail: {
       name: 'ProfilePostDetail',
       screen: PostDetail
+    },
+    ProfileUtilities: {
+      name: 'ProfileUtilities',
+      screen: ProfileUtilities
     }
   }, {
     initialRouteName: 'Profile',

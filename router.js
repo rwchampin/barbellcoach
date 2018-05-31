@@ -49,7 +49,7 @@ const AuthNavigator = () => {
 const CaptureStack = createStackNavigator({
   Capture: {
     screen: props => <Camera title="Capture" {...props} />,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: () => ({
       header: null
     })
   },

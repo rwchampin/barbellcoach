@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
 import {
-  Text,
-  View,
+  View
 } from 'react-native';
 import {
   SearchBar,
@@ -10,8 +10,8 @@ import {
 } from 'react-native-elements';
 
 class Notifications extends Component {
-  static navigationOptions({ navigation }) {
-    const headerTitle = 'Notifications'
+  static navigationOptions() {
+    const headerTitle = 'Notifications';
     return ({ headerTitle: headerTitle });
   }
 
@@ -20,17 +20,22 @@ class Notifications extends Component {
     this.state = {
       notifications: []
     };
-    this.ref = firebase.firestore().collection('notifications');
+    this.ref = firebase.firestore().collection('notifications').where('toUserUid', '==', props.AuthReducer.user.userProfile.uid);
     this.onCollectionUpdate = this.onCollectionUpdate.bind(this);
   }
+
+  componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+  }
+
   componentWillUnmount() {
     this.unsubscribe();
   }
 
-  onCollectionUpdate = (querySnapshot) => {
+  onCollectionUpdate(querySnapshot) {
     const notifications = [];
     querySnapshot.forEach((doc) => {
-      const { opened, type, fromUser, message } = doc.data();
+      const { opened, fromUser, message } = doc.data();
       notifications.push({
         key: doc.id,
         doc, // DocumentSnapshot
@@ -40,34 +45,28 @@ class Notifications extends Component {
       });
     });
     this.setState({
-      notifications,
-      loading: false,
-   });
+      notifications
+    });
   }
-  componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate)
 
-    const userUid = firebase.auth().currentUser.uid;
-  }
   render() {
     return (
       <View>
         <SearchBar light round />
         {this.state.notifications.map((notification, i) => {
-
           const leftIcon = notification.opened ? <View style={{ height: 10, width: 10, borderRadius: 5, marginRight: 15, backgroundColor: 'grey' }} /> : <View style={{ height: 10, width: 10, borderRadius: 5, marginRight: 15, backgroundColor: 'green' }} />;
           const type = notification.type === 'clientInvite' ? 'Client' : 'Coaching';
           return (
             <ListItem
-            key={i}
+              key={i}
               leftIcon={leftIcon}
               title={` ${notification.fromUser.firstName} has sent you a ${type} invite!`}
               opened={notification.opened}
               onPress={() => {
-                notification.doc.ref.update({'opened': true});
+                notification.doc.ref.update({ 'opened': true });
                 this.props.navigation.navigate('NotificationDetail', {
                   notification: notification
-                })
+                });
               }}
             />
           );
@@ -77,5 +76,8 @@ class Notifications extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return state;
+};
 
-export default Notifications;
+export default connect(mapStateToProps)(Notifications);
