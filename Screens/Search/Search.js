@@ -27,39 +27,46 @@ class Search extends Component {
         uid: '' // props.screenProps.user.data().uid
       }
     };
+    // this.getNotificationsForClient = this.getNotificationsForClient.bind(this);
     this.updateSearchResults = this.updateSearchResults.bind(this);
   }
-  componentDidMount() {
+
+  async componentDidMount() {
     const dbUserRef = firebase.firestore().collection('userProfiles');
-    const notificationsRef = firebase.firestore().collection('notifications');
     const clients = [];
-    dbUserRef
+    const that = this;
+    await dbUserRef
       .get().then((snapshot) => {
         snapshot.forEach((doc) => {
-          const client = doc.data();
-          let invited = false;
-          notificationsRef
-            .where('fromUser/uid', '==', this.props.AuthReducer.user.userProfile.uid)
-            .where('toUserUid', '==', client.uid)
-            .get()
-            .then((notificationSnapshot) => {
-              notificationSnapshot.forEach((notification) => {
-                debugger;
-                if (notification.data().type === 'coachInvite') {
-                  invited = true;
-                }
-                client.invited = invited;
-              });
-            });
-          clients.push(client);
-        });
-        this.setState({
-          clients: clients
+          clients.push(doc.data());
         });
       })
       .catch((err) => {
         console.log('Error getting documents', err);
       });
+      
+      // console.log('clientWithInvite', clientWithInvite)
+
+      that.setState({
+        clients: clients
+      });
+  }
+
+  async getNotificationsForClient(client) {
+    const notificationsRef = firebase.firestore().collection('notifications');
+    const that = this;
+    const clientWithInvite = client;
+    clientWithInvite.invited = false;
+    await notificationsRef.where('fromUser.uid', '==', that.props.AuthReducer.user.userProfile.uid)
+      .where('toUserUid', '==', clientWithInvite.uid).get().then((notificationSnapshot) => {
+        notificationSnapshot.forEach((notification) => {
+          if (notification.data().type === 'coachInvite') {
+            clientWithInvite.invited = true;
+          }
+        });
+      });
+      debugger;
+    return clientWithInvite;
   }
 
   async inviteClient(clientUid) {
@@ -79,6 +86,9 @@ class Search extends Component {
   }
 
   render() {
+    if (!this.state.clients.length) {
+      return <Text>Loading...</Text>;
+    }
     const that = this;
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
