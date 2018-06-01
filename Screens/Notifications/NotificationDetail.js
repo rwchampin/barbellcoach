@@ -12,25 +12,18 @@ class NotificationDetail extends Component {
     this.acceptInvitation = this.acceptInvitation.bind(this);
   }
   acceptInvitation() {
-
     const invitedUser = this.props.AuthReducer.user;
-    const invitedUserType = invitedUser.data().userType;
-
+    const invitedUserType = invitedUser.userProfile.userType;
 
     firebase.firestore().collection('userProfiles').where('uid', '==', this.props.navigation.state.params.notification.fromUser.uid)
-      .get().then((snapshot) => {
+      .get()
+      .then((snapshot) => {
         snapshot.forEach((doc) => {
           const invitee = doc;
-
-          if (invitedUserType === 'client') {
-            invitedUser.ref.update({ 'coach': this.props.navigation.state.params.notification.fromUser.uid });
-            invitee.ref.update({ 'clients': [invitedUser.data().uid, ...invitee.data().clients] });
-          } else {
-            invitedUser.ref.update({ 'clients': [this.props.navigation.state.params.notification.fromUser.uid, ...invitedUser.data().clients] });
-            invitee.ref.update({ 'coach': invitedUser.data().uid });
-          }
-        })
-      })
+          invitedUser.userRef.ref.update({ 'coach': this.props.navigation.state.params.notification.fromUser.uid });
+          invitee.ref.update({ 'clients': [invitedUser.userProfile.uid, ...invitee.data().clients] });
+        });
+      });
 
   }
   render() {
