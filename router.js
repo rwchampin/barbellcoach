@@ -12,6 +12,7 @@ import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
 import ChooseLift from './Screens/Coach/ChooseLift';
 import TabBar from './TabBar';
 import AddPostContent from './Screens/Post/AddPostContent';
+import LiftDetail from './Screens/Coach/LiftDetail';
 
 const AuthNavigator = () => {
   const SignUpNavigator = createStackNavigator({
@@ -73,6 +74,20 @@ const ChooseLiftStack = createStackNavigator({
         />
       )
     })
+  },
+  LiftDetail: {
+    screen: props => <LiftDetail {...props} />//,
+    // navigationOptions: ({ navigation }) => ({
+    //   headerTitle: 'Lift Details',
+    //   headerLeft: (
+    //     <Button
+    //       title="Cancel"
+    //       // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
+    //       // we need to pass `null` as an argument to goBack.
+    //       onPress={() => navigation.goBack(null)}
+    //     />
+    //   )
+    // })
   }
 }, {
   gesturesEnabled: false,

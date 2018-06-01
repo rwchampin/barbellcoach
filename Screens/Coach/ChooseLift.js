@@ -26,7 +26,15 @@ class ChooseLift extends Component {
                   hideChevron
                   key={i}
                   title={lift}
-                  onPress={() => { addLift(weekId, dayId, lift); that.props.navigation.goBack(null); }}
+                  onPress={() => {
+                    this.props.navigation.navigate('LiftDetail', {
+                      lift: lift,
+                      addLift: () => {
+                        addLift(weekId, dayId, lift);
+                        that.props.navigation.goBack(null);
+                      }
+                    });
+                  }}
                 />
               );
             })}

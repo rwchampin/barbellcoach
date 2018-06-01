@@ -58,7 +58,6 @@ class Profile extends Component {
   }
 
   render() {
-    console.log('wtf', this.state.posts);
     const tabRoutes = [
       { key: '1', title: 'Lifts' },
       { key: '2', title: 'Feed' }

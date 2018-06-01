@@ -1,6 +1,7 @@
 import ClientProfile from '../Coach/ClientProfile';
 import PostDetail from '../Post/PostDetail';
 import CreateProgram from './CreateProgram';
+import LiftDetail from './LiftDetail';
 
 export default {
   VisitingProfile: {
@@ -14,5 +15,9 @@ export default {
   CreateProgram: {
     name: 'Create Program',
     screen: CreateProgram
+  },
+  LiftDetail: {
+    name: 'Lift Detail',
+    screen: LiftDetail
   }
 };

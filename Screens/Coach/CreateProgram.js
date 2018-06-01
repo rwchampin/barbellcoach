@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import uuid from 'uuid/v1';
 import {
   Button
 } from 'react-native-elements';
@@ -12,11 +13,6 @@ import { buildProgram } from '../../Redux/Actions';
 import Week from './Week';
 
 class CreateProgram extends Component {
-  static uuidv4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-  }
   static navigationOptions() {
     const headerTitle = 'Create New Program';
     return ({
@@ -48,7 +44,7 @@ class CreateProgram extends Component {
       program: [
         ...this.state.program,
         {
-          id: CreateProgram.uuidv4(),
+          id: uuid(),
           days: [],
           type: 'week'
         }
@@ -62,7 +58,7 @@ class CreateProgram extends Component {
     program[weekIndex].days.push({
       type: 'day',
       lifts: [],
-      id: CreateProgram.uuidv4()
+      id: uuid()
     });
     this.setState({
       program: program
@@ -83,7 +79,7 @@ class CreateProgram extends Component {
     program[weekIndex].days[dayIndex].lifts.push({
       type: 'lift',
       lift: lift,
-      id: CreateProgram.uuidv4()
+      id: uuid()
     });
     this.setState({
       program: program

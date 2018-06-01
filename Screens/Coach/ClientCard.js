@@ -30,7 +30,8 @@ class ClientCard extends Component {
   }
   goToClientDetail() {
     this.props.navigation.navigate('VisitingProfile', {
-      client: this.state.client
+      client: this.state.client,
+      isClient: true
     });
   }
   render() {
