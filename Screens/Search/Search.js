@@ -27,46 +27,41 @@ class Search extends Component {
         uid: '' // props.screenProps.user.data().uid
       }
     };
-    // this.getNotificationsForClient = this.getNotificationsForClient.bind(this);
+    this.clients = [];
+    this.markInvited = this.markInvited.bind(this);
     this.updateSearchResults = this.updateSearchResults.bind(this);
   }
 
-  async componentDidMount() {
-    const dbUserRef = firebase.firestore().collection('userProfiles');
-    const clients = [];
-    const that = this;
-    await dbUserRef
-      .get().then((snapshot) => {
-        snapshot.forEach((doc) => {
-          clients.push(doc.data());
+  componentDidMount() {
+    firebase.firestore().collection('userProfiles').get()
+      .then((snapshot) => {
+        this.clients = [];
+        snapshot.forEach((docu) => {
+          const client = docu.data();
+          this.markInvited(client);
         });
-      })
-      .catch((err) => {
-        console.log('Error getting documents', err);
-      });
-      
-      // console.log('clientWithInvite', clientWithInvite)
-
-      that.setState({
-        clients: clients
       });
   }
 
-  async getNotificationsForClient(client) {
-    const notificationsRef = firebase.firestore().collection('notifications');
+  markInvited(client) {
     const that = this;
-    const clientWithInvite = client;
-    clientWithInvite.invited = false;
-    await notificationsRef.where('fromUser.uid', '==', that.props.AuthReducer.user.userProfile.uid)
-      .where('toUserUid', '==', clientWithInvite.uid).get().then((notificationSnapshot) => {
-        notificationSnapshot.forEach((notification) => {
-          if (notification.data().type === 'coachInvite') {
-            clientWithInvite.invited = true;
-          }
-        });
+    const clientClone = client;
+    const dbNotificationsRef = firebase.firestore().collection('notifications')
+      .where('toUserUid', '==', clientClone.uid)
+      .where('fromUser.uid', '==', that.props.AuthReducer.user.userProfile.uid);
+    clientClone.invited = false;
+    dbNotificationsRef.onSnapshot((hsnapshot) => {
+      hsnapshot.forEach((notification) => {
+        if (notification.data().type === 'coachInvite') {
+          clientClone.invited = true;
+        }
       });
-      debugger;
-    return clientWithInvite;
+      this.clients = this.clients.filter(c => c.uid !== client.uid);
+      this.clients.push(clientClone);
+      that.setState({
+        clients: this.clients
+      });
+    });
   }
 
   async inviteClient(clientUid) {
