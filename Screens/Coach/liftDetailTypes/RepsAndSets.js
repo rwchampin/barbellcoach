@@ -14,6 +14,7 @@ class RepsAndSets extends Component {
     };
   }
   render() {
+    this.props.setRepsAndSets(this.state);
     return (
       <View style={{ display: 'flex', flexDirection: 'row' }}>
         <View style={{ flex: 1 }}>

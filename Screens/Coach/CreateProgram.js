@@ -1,22 +1,30 @@
 import React, { Component } from 'react';
 import {
   Text,
-  View
+  View,
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import uuid from 'uuid/v1';
+import _ from 'lodash';
 import {
   Button
 } from 'react-native-elements';
-import { buildProgram } from '../../Redux/Actions';
+import { addWeek, saveProgram, createNewProgram } from '../../Redux/Actions';
 import Week from './Week';
 
 class CreateProgram extends Component {
-  static navigationOptions() {
+  static navigationOptions({ navigation }) {
+    const params = navigation.state.params || {};
     const headerTitle = 'Create New Program';
     return ({
-      headerTitle: headerTitle
+      headerTitle: headerTitle,
+      headerRight: (
+        <TouchableOpacity onPress={params.saveProgram}>
+          <Text style={{ marginRight: 20 }}>Save Draft</Text>
+        </TouchableOpacity>
+      )
     });
   }
 
@@ -26,43 +34,42 @@ class CreateProgram extends Component {
       program: [],
       modalVisible: false
     };
+    this.programId = null;
     this.addWeek = this.addWeek.bind(this);
-    this.addDay = this.addDay.bind(this);
-    this.addLift = this.addLift.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
     this.toggleLiftModal = this.toggleLiftModal.bind(this);
   }
 
+  componentWillMount() {
+    this.props.navigation.setParams({
+      saveProgram: this.props.saveProgram
+    });
+  }
+
+  componentDidMount() {
+    this.programId = uuid();
+    this.props.createNewProgram({
+      id: this.programId,
+      coach: this.props.AuthReducer.user.userProfile.uid,
+      client: this.props.navigation.state.params.client,
+      program: []
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
+    const program = _.find(nextProps.ProgramReducer.programs, { id: this.programId });
     this.setState({
-      program: nextProps.ProgramReducer.program
+      program: program.program
     });
   }
 
   addWeek() {
-    this.setState({
-      program: [
-        ...this.state.program,
-        {
-          id: uuid(),
-          days: [],
-          type: 'week'
-        }
-      ]
-    });
-  }
-
-  addDay(weekId) {
-    const weekIndex = _.findIndex(this.state.program, { id: weekId });
-    const { program } = this.state;
-    program[weekIndex].days.push({
-      type: 'day',
-      lifts: [],
-      id: uuid()
-    });
-    this.setState({
-      program: program
-    });
+    const week = {
+      id: uuid(),
+      days: [],
+      type: 'week'
+    };
+    this.props.addWeek(week, this.programId);
   }
 
   toggleLiftModal() {
@@ -71,37 +78,25 @@ class CreateProgram extends Component {
     });
   }
 
-  addLift(weekId, dayId, lift) {
-    const weekIndex = _.findIndex(this.state.program, { id: weekId });
-    const week = _.find(this.state.program, { id: weekId });
-    const dayIndex = _.findIndex(week.days, { id: dayId });
-    const { program } = this.state;
-    program[weekIndex].days[dayIndex].lifts.push({
-      type: 'lift',
-      lift: lift,
-      id: uuid()
-    });
-    this.setState({
-      program: program
-    });
-  }
-
   buildProgram() {
     const program = this.state.program.map((week, i) => {
       return (
         <Week
+          programId={this.programId}
           key={i}
           weekCount={i}
           weekId={week.id}
-          addDay={this.addDay}
           days={week.days}
-          addLift={this.addLift}
           toggleLiftModal={this.toggleLiftModal}
           navigation={this.props.navigation}
         />
       );
     });
-    return program;
+    return (
+      <ScrollView style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+        {program}
+      </ScrollView>
+    );
   }
 
   render() {
@@ -120,9 +115,10 @@ class CreateProgram extends Component {
       </View>
     );
     return (
-      <View style={{ display: 'flex', height: '100%', flexDirection: 'column', width: '100%' }}>
+      <View style={{ display: 'flex', height: '100%' }}>
         <Button
           title="Add Week"
+          style={{ marginTop: 20 }}
           containerStyle={{ width: '100%' }}
           onPress={this.addWeek}
         />
@@ -137,5 +133,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  buildProgram
+  addWeek,
+  saveProgram,
+  createNewProgram
 })(CreateProgram);

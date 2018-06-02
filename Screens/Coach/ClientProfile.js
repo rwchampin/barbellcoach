@@ -23,7 +23,13 @@ class ClientProfile extends Component {
       headerTitle: headerTitle
     };
     if (params.isClient) {
-      header.headerRight = <View style={{ marginRight: 10 }}><TouchableOpacity onPress={params.goToCreatePrograms}><Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} /></TouchableOpacity></View>;
+      header.headerRight = (
+        <View style={{ marginRight: 10 }}>
+          <TouchableOpacity onPress={params.goToCreatePrograms}>
+            <Icon name="plus" type="entypo" size={30} color={'#000000'} style={{ marginRight: 10 }} />
+          </TouchableOpacity>
+        </View>
+      );
     }
     return header;
   }
@@ -58,7 +64,9 @@ class ClientProfile extends Component {
   }
 
   goToCreatePrograms() {
-    this.props.navigation.navigate('CreateProgram');
+    this.props.navigation.navigate('CreateProgram', {
+      client: this.props.navigation.state.params.client.uid
+    });
   }
 
   render() {

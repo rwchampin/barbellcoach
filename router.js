@@ -1,5 +1,4 @@
 import React from 'react';
-import { Icon } from 'react-native-elements';
 import { View, Button } from 'react-native';
 import { TabNavigator, createStackNavigator } from 'react-navigation';
 import Login from './Auth/Login';
@@ -56,7 +55,7 @@ const CaptureStack = createStackNavigator({
   },
   AddPostContent: {
     name: 'AddPostContent',
-    screen: AddPostContent
+    screen: LiftDetail
   }
 });
 
@@ -76,22 +75,8 @@ const ChooseLiftStack = createStackNavigator({
     })
   },
   LiftDetail: {
-    screen: props => <LiftDetail {...props} />//,
-    // navigationOptions: ({ navigation }) => ({
-    //   headerTitle: 'Lift Details',
-    //   headerLeft: (
-    //     <Button
-    //       title="Cancel"
-    //       // Note that since we're going back to a different navigator (CaptureStack -> RootStack)
-    //       // we need to pass `null` as an argument to goBack.
-    //       onPress={() => navigation.goBack(null)}
-    //     />
-    //   )
-    // })
+    screen: LiftDetail
   }
-}, {
-  gesturesEnabled: false,
-  initialRouteName: 'ChooseLift'
 });
 
 const createTabNavigator = (user) => {

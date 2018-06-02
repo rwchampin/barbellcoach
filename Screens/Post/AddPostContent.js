@@ -62,7 +62,7 @@ class AddPostContent extends Component {
     super(props);
     this.state = {
       liftDescription: null,
-      liftType: "Bench",
+      liftType: 'Bench',
       rpe: 5,
       postAssetType: props.navigation.state.params.postAssetType,
       mimeType: props.navigation.state.params.postAssetType === 'video' ? 'video/quicktime' : 'image/jpeg',

@@ -11,7 +11,13 @@ class ProfileUtilities extends Component {
   render() {
     return (
       <View>
-        <ListItem title={'Log Out'} onPress={() => {firebase.auth().signOut()}} />
+        <ListItem
+          title={'Client Program Drafts'}
+          onPress={() => {
+            this.props.navigation.navigate('ProgramDrafts');
+          }}
+        />
+        <ListItem title={'Log Out'} onPress={() => { firebase.auth().signOut(); }} />
       </View>
     );
   }
