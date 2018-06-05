@@ -12,7 +12,7 @@ import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from '../Profile/ProfileHeaderSection';
 import { Icon } from 'react-native-elements';
 import PostGrid from '../Post/PostGrid';
-import Programs from '../Profile/Programs';
+import ProgramList from '../Program/ProgramList';
 
 class ClientProfile extends Component {
   static navigationOptions({ navigation }) {
@@ -76,7 +76,7 @@ class ClientProfile extends Component {
     ];
     const routeMap = {
       '1': () => <PostGrid postDetailDestination={this.props.postDetailDestination} navigation={this.props.navigation} gridItems={this.state.posts} />,
-      '2': () => <Programs />
+      '2': () => <ProgramList />
     };
     if (this.state.loading) {
       return <Text>Loading...</Text>;

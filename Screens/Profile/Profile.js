@@ -11,7 +11,7 @@ import TabSections from '../Common/TabSections';
 import ProfileHeaderSection from './ProfileHeaderSection';
 import { Icon } from 'react-native-elements';
 import PostGrid from '../Post/PostGrid';
-import Programs from '../Profile/Programs';
+import ProgramList from '../Program/ProgramList';
 
 class Profile extends Component {
   static async logout() {
@@ -64,7 +64,7 @@ class Profile extends Component {
     ];
     const routeMap = {
       '1': () => <PostGrid postDetailDestination="ProfilePostDetail" navigation={this.props.navigation} gridItems={this.state.posts} />,
-      '2': () => <Programs />
+      '2': () => <ProgramList />
     };
     if (this.state.loading) {
       return <Text>Loading...</Text>;

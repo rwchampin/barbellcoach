@@ -11,7 +11,7 @@ import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
 import ChooseLift from './Screens/Coach/ChooseLift';
 import TabBar from './TabBar';
 import LiftDetail from './Screens/Coach/LiftDetail';
-import Programs from './Screens/Profile/Programs';
+import { ProgramNavigator } from './Screens/Program/ProgramNavigator';
 
 const AuthNavigator = () => {
   const SignUpNavigator = createStackNavigator({
@@ -84,7 +84,7 @@ const createTabNavigator = (user) => {
   const tabList = {};
   if (user.user.data().userType === 'client') {
     tabList.Programs = {
-      screen: Programs
+      screen: ProgramNavigator
     };
   } else {
     tabList.Coach = {

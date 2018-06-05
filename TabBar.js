@@ -50,7 +50,7 @@ class TabBar extends Component {
       'Programs': <Icon name="list" size={35} color={color} />,
       'Search': <Icon name="search" size={35} color={color} />,
       'Profile': this.state.avatar ? <Image style={profileStyle} source={{ uri: this.state.avatar }} /> : <View style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }} />,
-      'Notifications': <Icon name="list" size={35} color={color} />,
+      'Notifications': <Icon name="email" size={35} color={color} />,
       'Landing': <Icon name="people" size={35} color={color} />,
       'Capture': <Icon name="camera" size={35} color={color} />
     };

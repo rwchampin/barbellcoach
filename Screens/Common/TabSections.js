@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
-import PostGrid from '../Post/PostGrid';
-import Programs from '../Profile/Programs';
 
 export default class TabSections extends PureComponent {
   constructor(props) {
