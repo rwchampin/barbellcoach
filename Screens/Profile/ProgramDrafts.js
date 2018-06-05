@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
-  Text,
-  View
+  Text
 } from 'react-native';
+import {
+  List,
+  ListItem
+} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 
 class ProgramDrafts extends Component {
@@ -22,11 +25,10 @@ class ProgramDrafts extends Component {
   componentDidMount() {
     const drafts = [];
     const ref = firebase.firestore().collection('clientPrograms');
-    ref.where('coach.uid', '==', this.props.AuthReducer.user.userProfile.uid).get().then((snapshot) => {
+    ref.get().then((snapshot) => {
       snapshot.forEach((draft) => {
-        drafts.push(draft);
+        drafts.push(draft.data());
       });
-      debugger;
       this.setState({
         drafts: drafts
       });
@@ -37,11 +39,22 @@ class ProgramDrafts extends Component {
       return <Text>Loading...</Text>;
     }
     return (
-      <View>
+      <List>
         {this.state.drafts.map((draft) => {
-          return <Text>draft.client</Text>
+          return (
+            <ListItem
+              title={draft.client.firstName}
+              avatar={draft.client.avatar}
+              onPress={() => {
+                this.props.navigation.navigate('CreateProgram', {
+                  program: draft,
+                  title: 'Update Program'
+                });
+              }}
+            />
+          )
         })}
-      </View>
+      </List>
     );
 
   }

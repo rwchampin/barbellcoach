@@ -6,7 +6,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import {
-  Card
+  Card,
+  List
 } from 'react-native-elements';
 import uuid from 'uuid/v1';
 import { removeDay, addLift } from '../../Redux/Actions';
@@ -68,9 +69,9 @@ class Day extends Component {
               <Text>Add Lift</Text>
             </TouchableOpacity>
           </View>
-          <View>
+          <List>
             {lifts}
-          </View>
+          </List>
         </Card>
       </View>
     );

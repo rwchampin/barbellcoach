@@ -10,8 +10,8 @@ import { SearchNavigator } from './Screens/Search/SearchNavigator';
 import { ProfileNavigator } from './Screens/Profile/ProfileNavigator';
 import ChooseLift from './Screens/Coach/ChooseLift';
 import TabBar from './TabBar';
-import AddPostContent from './Screens/Post/AddPostContent';
 import LiftDetail from './Screens/Coach/LiftDetail';
+import Programs from './Screens/Profile/Programs';
 
 const AuthNavigator = () => {
   const SignUpNavigator = createStackNavigator({
@@ -79,32 +79,32 @@ const ChooseLiftStack = createStackNavigator({
   }
 });
 
-const createTabNavigator = (user) => {
-  const landing = user.user.data().userType === 'client' ? (
-    {
-      screen: CoachNavigator
-    }
-  ) : (
-    {
-      screen: CoachNavigator
-    }
-  );
 
-  const Tabs = TabNavigator({
-    Landing: landing,
-    Search: {
-      screen: SearchNavigator
-    },
-    Capture: {
-      screen: View
-    },
-    Notifications: {
-      screen: NotificationsNavigator
-    },
-    Profile: {
-      screen: ProfileNavigator
-    }
-  }, {
+const createTabNavigator = (user) => {
+  const tabList = {};
+  if (user.user.data().userType === 'client') {
+    tabList.Programs = {
+      screen: Programs
+    };
+  } else {
+    tabList.Coach = {
+      screen: CoachNavigator
+    };
+  }
+  tabList.Search = {
+    screen: SearchNavigator
+  };
+  tabList.Capture = {
+    screen: View
+  };
+  tabList.Notifications = {
+    screen: NotificationsNavigator
+  };
+  tabList.Profile = {
+    screen: ProfileNavigator
+  };
+
+  const Tabs = TabNavigator(tabList, {
     // Instagram has the tabbar on the bottom on iOS and Android
     tabBarPosition: 'bottom',
     // Specify our custom navbar

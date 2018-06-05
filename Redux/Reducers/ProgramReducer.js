@@ -5,6 +5,7 @@ import {
   REMOVE_DAY,
   ADD_LIFT,
   REMOVE_LIFT,
+  UPDATE_PROGRAM,
   CREATE_NEW_PROGRAM
 } from '../Actions/types';
 
@@ -16,6 +17,8 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CREATE_NEW_PROGRAM:
       return { ...state, programs: [...state.programs, action.payload] };
+    case UPDATE_PROGRAM:
+      return { ...state, programs: action.payload };
     case ADD_WEEK:
       return { ...state, programs: action.payload };
     case REMOVE_WEEK:

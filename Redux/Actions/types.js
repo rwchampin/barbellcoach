@@ -2,7 +2,9 @@ export const ADD_USER = 'add_user';
 export const ADD_CLIENTS = 'add_clients';
 
 export const CREATE_NEW_PROGRAM = 'create_new_program';
+export const UPDATE_PROGRAM = 'update_program';
 export const SAVE_PROGRAM = 'save_program';
+export const SEND_PROGRAM_TO_CLIENT = 'send_program_to_client';
 
 export const ADD_WEEK = 'add_week';
 export const ADD_DAY = 'add_day';

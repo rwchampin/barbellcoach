@@ -52,7 +52,16 @@ class Week extends Component {
   }
 
   render() {
-    const days = this.props.days.length ? this.buildDays() : <Text>Add a day</Text>;
+    const days = this.props.days.length ? this.buildDays() : <View style={{
+      borderColor: 'black',
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      flex: 1,
+      margin: 20,
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}
+    ><Text>Add a day</Text></View>;
     const addDayBtn = this.props.days.length < 7 ? (
       <TouchableOpacity onPress={this.addDay}><Text>Add Day</Text></TouchableOpacity>
     ) : null;

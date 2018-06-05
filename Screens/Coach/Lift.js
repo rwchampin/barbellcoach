@@ -5,6 +5,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import { ListItem } from 'react-native-elements';
 import { removeLift } from '../../Redux/Actions';
 
 class Lift extends Component {
@@ -14,7 +15,12 @@ class Lift extends Component {
   }
 
   removeLift() {
-    this.props.removeLift(this.props.programId, this.props.weekId, this.props.dayId, this.props.lift.id);
+    this.props.removeLift(
+      this.props.programId,
+      this.props.weekId,
+      this.props.dayId,
+      this.props.lift.id
+    );
   }
 
   render() {
@@ -23,15 +29,18 @@ class Lift extends Component {
     }
     const repsAndSets = <Text style={{ fontWeight: 'bold' }}>{this.props.lift.repsAndSets.sets} x {this.props.lift.repsAndSets.reps}</Text>;
     return (
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <ListItem
+        title={this.props.lift.liftType}
+        style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
+        rightIcon={<Text>{repsAndSets}</Text>}
+      >
         <Text style={{ fontWeight: 'bold' }}>
-          {this.props.lift.liftType}
           <TouchableOpacity onPress={this.removeLift}>
             <Text>Remove</Text>
           </TouchableOpacity>
         </Text>
-        {repsAndSets}
-      </View>
+
+      </ListItem>
     );
   }
 }

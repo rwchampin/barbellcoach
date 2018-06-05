@@ -65,7 +65,7 @@ class ClientProfile extends Component {
 
   goToCreatePrograms() {
     this.props.navigation.navigate('CreateProgram', {
-      client: this.props.navigation.state.params.client.uid
+      client: this.props.navigation.state.params.client
     });
   }
 

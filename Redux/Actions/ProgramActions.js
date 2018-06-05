@@ -7,13 +7,29 @@ import {
   REMOVE_DAY,
   REMOVE_WEEK,
   SAVE_PROGRAM,
-  CREATE_NEW_PROGRAM
+  UPDATE_PROGRAM,
+  CREATE_NEW_PROGRAM,
+  SEND_PROGRAM_TO_CLIENT
 } from './types';
 
 export const createNewProgram = (newProgram) => {
   return {
     type: CREATE_NEW_PROGRAM,
     payload: newProgram
+  };
+};
+
+export const updateProgram = (program) => {
+  return (dispatch, getState) => {
+    const { programs } = getState().ProgramReducer;
+    const programIndex = _.findIndex(programs, { id: program.id });
+    if (programIndex === -1) {
+      programs.push(program);
+    }
+    return dispatch({
+      type: UPDATE_PROGRAM,
+      payload: programs
+    });
   };
 };
 
@@ -119,12 +135,33 @@ export const removeLift = (programId, weekId, dayId, liftId) => {
   };
 };
 
-export const saveProgram = () => {
+export const saveProgram = (programId) => {
   return (dispatch, getState) => {
+    const { programs } = getState().ProgramReducer;
+    const programIndex = _.findIndex(programs, { id: programId });
     const ref = firebase.firestore().collection('clientPrograms');
-    ref.add(getState().ProgramReducer.programs);
+    const program = getState().ProgramReducer.programs[programIndex];
+    ref.add(program);
     return dispatch({
       type: SAVE_PROGRAM,
+      payload: ''
+    });
+  };
+};
+
+export const sendProgramToClient = (program) => {
+  return (dispatch, getState) => {
+    const { programs } = getState().ProgramReducer;
+    const programIndex = _.findIndex(programs, { id: program });
+    const savedProgram = programs[programIndex];
+    const ref = firebase.firestore().collection('userProfiles');
+    ref.get().then((snapshot) => {
+      snapshot.forEach((userProfile) => {
+        userProfile.ref.update({ 'programs': [savedProgram, ...userProfile.data().programs] });
+      });
+    });
+    return dispatch({
+      type: SEND_PROGRAM_TO_CLIENT,
       payload: ''
     });
   };

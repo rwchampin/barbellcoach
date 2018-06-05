@@ -11,17 +11,27 @@ import _ from 'lodash';
 import {
   Button
 } from 'react-native-elements';
-import { addWeek, saveProgram, createNewProgram } from '../../Redux/Actions';
+import {
+  addWeek,
+  saveProgram,
+  createNewProgram,
+  updateProgram,
+  sendProgramToClient
+} from '../../Redux/Actions';
 import Week from './Week';
 
 class CreateProgram extends Component {
   static navigationOptions({ navigation }) {
     const params = navigation.state.params || {};
-    const headerTitle = 'Create New Program';
+    const headerTitle = params.title || 'Create New Program';
+
     return ({
       headerTitle: headerTitle,
       headerRight: (
-        <TouchableOpacity onPress={params.saveProgram}>
+        <TouchableOpacity onPress={() => {
+          params.saveProgram(params.programId);
+        }}
+        >
           <Text style={{ marginRight: 20 }}>Save Draft</Text>
         </TouchableOpacity>
       )
@@ -38,6 +48,7 @@ class CreateProgram extends Component {
     this.addWeek = this.addWeek.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
     this.toggleLiftModal = this.toggleLiftModal.bind(this);
+    this.sendProgramToClient = this.sendProgramToClient.bind(this);
   }
 
   componentWillMount() {
@@ -47,7 +58,18 @@ class CreateProgram extends Component {
   }
 
   componentDidMount() {
+    if (this.props.navigation.state.params.program) {
+      this.programId = this.props.navigation.state.params.program.id;
+      this.props.navigation.setParams({
+        programId: this.programId
+      });
+      this.props.updateProgram(this.props.navigation.state.params.program);
+      return;
+    }
     this.programId = uuid();
+    this.props.navigation.setParams({
+      programId: this.programId
+    });
     this.props.createNewProgram({
       id: this.programId,
       coach: this.props.AuthReducer.user.userProfile.uid,
@@ -95,8 +117,18 @@ class CreateProgram extends Component {
     return (
       <ScrollView style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
         {program}
+        <Button
+          title="Send"
+          style={{ marginTop: 20 }}
+          containerStyle={{ width: '100%' }}
+          onPress={this.sendProgramToClient}
+        />
       </ScrollView>
     );
+  }
+
+  sendProgramToClient() {
+    this.props.sendProgramToClient(this.programId);
   }
 
   render() {
@@ -135,5 +167,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   addWeek,
   saveProgram,
-  createNewProgram
+  updateProgram,
+  createNewProgram,
+  sendProgramToClient
 })(CreateProgram);
