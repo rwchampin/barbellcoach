@@ -3,15 +3,11 @@ import { connect } from 'react-redux';
 import {
   View,
   Text,
-  TouchableWithoutFeedback,
   Dimensions,
   Animated,
-  Easing,
-  ScrollView,
-  StyleSheet
+  Easing
 } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
-
+import ProgramCard from './ProgramCard';
 
 class Program extends Component {
   static navigationOptions() {
@@ -22,13 +18,13 @@ class Program extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeWeek: 0,
       fullScreenSlide: false,
-      slideHeight: new Animated.Value(300),
       slideWidth: new Animated.Value(Dimensions.get('window').width - 20),
       slideMargin: new Animated.Value(10),
       slideRadius: new Animated.Value(10),
-      topHeight: new Animated.Value(1)
+      topHeight: new Animated.Value(1),
+      programSectionHeight: new Animated.Value(0),
+      ryan: new Animated.Value(300)
     };
     this.renderItems = this.renderItems.bind(this);
     this.toggleWeekActive = this.toggleWeekActive.bind(this);
@@ -41,15 +37,7 @@ class Program extends Component {
         {
           toValue: !this.state.fullScreenSlide ? 0 : 1,
           easing: Easing.bezier(0.55, 0, 0.1, 1),
-          duration: 300
-        }
-      ),
-      Animated.timing(
-        this.state.slideHeight,
-        {
-          toValue: this.state.fullScreenSlide ? 300 : Dimensions.get('window').height,
-          easing: Easing.bezier(0.55, 0, 0.1, 1),
-          duration: 300
+          duration: 250
         }
       ),
       Animated.timing(
@@ -57,7 +45,7 @@ class Program extends Component {
         {
           toValue: this.state.fullScreenSlide ? Dimensions.get('window').width - 20 : Dimensions.get('window').width,
           easing: Easing.bezier(0.55, 0, 0.1, 1),
-          duration: 300
+          duration: 250
         }
       ),
       Animated.timing(
@@ -65,7 +53,7 @@ class Program extends Component {
         {
           toValue: this.state.fullScreenSlide ? 10 : 0,
           easing: Easing.bezier(0.55, 0, 0.1, 1),
-          duration: 300
+          duration: 250
         }
       ),
       Animated.timing(
@@ -73,7 +61,23 @@ class Program extends Component {
         {
           toValue: this.state.fullScreenSlide ? 10 : 0,
           easing: Easing.bezier(0.55, 0, 0.1, 1),
-          duration: 300
+          duration: 250
+        }
+      ),
+      Animated.timing(
+        this.state.ryan,
+        {
+          toValue: this.state.fullScreenSlide ? 300 : 0,
+          easing: Easing.bezier(0.55, 0, 0.1, 1),
+          duration: 250
+        }
+      ),
+      Animated.timing(
+        this.state.programSectionHeight,
+        {
+          toValue: this.state.fullScreenSlide ? 0 : 1,
+          easing: Easing.bezier(0.55, 0, 0.1, 1),
+          duration: 250
         }
       )
     ]).start();
@@ -85,20 +89,19 @@ class Program extends Component {
   renderItems() {
     const that = this;
     const { program } = this.props.navigation.state.params.program;
-    return program.map((week) => {
+    return program.map((week, i) => {
       return (
-        <TouchableWithoutFeedback onPress={this.toggleWeekActive}>
-          <Animated.View style={{
-            backgroundColor: 'blue',
-            width: that.state.slideWidth,
-            margin: this.state.slideMargin,
-            height: that.state.slideHeight,
-            borderRadius: this.state.slideRadius
-          }}
-          >
-            <Text>{ week.id }</Text>
-          </Animated.View>
-        </TouchableWithoutFeedback>
+        <ProgramCard
+          key={i}
+          slideWidth={that.state.slideWidth}
+          slideMargin={that.state.slideMargin}
+          slideHeight={that.state.slideHeight}
+          slideRadius={that.state.slideRadius}
+          fullScreenSlide={!this.state.fullScreenSlide}
+          index={i}
+          week={week}
+          toggleWeekActive={that.toggleWeekActive}
+        />
       );
     });
   }
@@ -106,9 +109,13 @@ class Program extends Component {
   render() {
     const weeks = this.renderItems();
     return (
-      <View style={{ backgroundColor: 'red', display: 'flex', height: '100%', flexDirection: 'column' }}>
-        <Animated.View style={{ backgroundColor: 'orange', flex: this.state.topHeight }} />
+      <View style={{ position: 'relative', height: '100%', backgroundColor: 'red', display: 'flex', flexDirection: 'column' }}>
+        <Animated.View style={{ flex: this.state.topHeight }}>
+          <Text>Program Details</Text>
+        </Animated.View>
         <Animated.ScrollView
+          style={{ position: 'absolute', bottom: 0, top: this.state.ryan }}
+          contentContainerStyle={{ backgroundColor: 'black', display: 'flex' }}
           ref={(scrollView) => { this.scrollView = scrollView; }}
           horizontal
           scrollEnabled={!this.state.fullScreenSlide}
