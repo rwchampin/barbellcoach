@@ -30,7 +30,6 @@ class ProgramCard extends Component {
   }
   render() {
     const that = this;
-    debugger;
     return (
       <Animated.ScrollView style={{
         backgroundColor: 'blue',
@@ -66,7 +65,7 @@ class ProgramCard extends Component {
                     return (
                       <View key={x} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text>{lift.liftType}</Text>
-                        <Text>{`${lift.repsAndSets.sets} x ${lift.repsAndSets.reps}`}</Text>
+                        <Text>{`${lift.repsAndSets.length} x ${lift.repsAndSets[0].reps.length}`}</Text>
                       </View>
                     );
                   })}

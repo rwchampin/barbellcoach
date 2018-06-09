@@ -12,10 +12,6 @@ import TrainingSessionSet from './TrainingSessionSet';
 class TrainingSessionLift extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sets: Array(props.lift.repsAndSets.sets).fill({'completed': false}),
-      reps: Array(props.lift.repsAndSets.reps).fill({'completed': false})
-    };
   }
   render() {
     return (
