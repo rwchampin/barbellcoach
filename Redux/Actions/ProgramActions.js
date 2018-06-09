@@ -110,8 +110,10 @@ export const addDetailToLift = (programId, weekId, dayId, lift) => {
     const week = _.find(programs[programIndex].program, { id: weekId });
     const dayIndex = _.findIndex(week.days, { id: dayId });
     const liftIndex = _.findIndex(week.days[dayIndex].lifts, { id: lift.id });
-    programs[programIndex].program[weekIndex].days[dayIndex].lifts[liftIndex].liftType = lift.liftType;
-    programs[programIndex].program[weekIndex].days[dayIndex].lifts[liftIndex].repsAndSets = lift.repsAndSets;
+    programs[programIndex].program[weekIndex].days[dayIndex]
+      .lifts[liftIndex].liftType = lift.liftType;
+    programs[programIndex].program[weekIndex].days[dayIndex]
+      .lifts[liftIndex].repsAndSets = lift.repsAndSets;
     return dispatch({
       type: ADD_LIFT,
       payload: programs
@@ -126,7 +128,8 @@ export const removeLift = (programId, weekId, dayId, liftId) => {
     const weekIndex = _.findIndex(programs[programIndex].program, { id: weekId });
     const week = _.find(programs[programIndex].program, { id: weekId });
     const dayIndex = _.findIndex(week.days, { id: dayId });
-    const lifts = programs[programIndex].program[weekIndex].days[dayIndex].lifts.filter(lift => lift.id !== liftId);
+    const lifts = programs[programIndex].program[weekIndex].days[dayIndex].lifts
+      .filter(lift => lift.id !== liftId);
     programs[programIndex].program[weekIndex].days[dayIndex].lifts = lifts;
     return dispatch({
       type: ADD_DAY,

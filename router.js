@@ -87,7 +87,7 @@ const createTabNavigator = (user) => {
       screen: ProgramNavigator
     };
   } else {
-    tabList.Coach = {
+    tabList.Clients = {
       screen: CoachNavigator
     };
   }

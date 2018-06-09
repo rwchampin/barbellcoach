@@ -72,9 +72,11 @@ class CreateProgram extends Component {
     });
     this.props.createNewProgram({
       id: this.programId,
-      coach: this.props.AuthReducer.user.userProfile.uid,
+      created: Date.now(),
+      coach: this.props.AuthReducer.user.userProfile,
       client: this.props.navigation.state.params.client,
-      program: []
+      program: [],
+      programProgress: 0
     });
   }
 
@@ -129,6 +131,7 @@ class CreateProgram extends Component {
 
   sendProgramToClient() {
     this.props.sendProgramToClient(this.programId);
+    this.props.navigation.goBack();
   }
 
   render() {

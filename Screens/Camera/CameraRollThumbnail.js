@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {
   TouchableOpacity,
-  Image,
-  Dimensions
+  Image
 } from 'react-native';
 
 class CameraRollThumbnail extends Component {
