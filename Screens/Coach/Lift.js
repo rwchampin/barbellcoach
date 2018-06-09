@@ -27,7 +27,7 @@ class Lift extends Component {
     if (!this.props.lift.repsAndSets) {
       return <View />;
     }
-    const repsAndSets = <Text style={{ fontWeight: 'bold' }}>{this.props.lift.repsAndSets.sets} x {this.props.lift.repsAndSets.reps}</Text>;
+    const repsAndSets = <Text style={{ fontWeight: 'bold' }}>{this.props.lift.repsAndSets.length} x {this.props.lift.repsAndSets[0].reps.length}</Text>;
     return (
       <ListItem
         title={this.props.lift.liftType}

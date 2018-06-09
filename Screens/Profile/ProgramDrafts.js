@@ -40,9 +40,10 @@ class ProgramDrafts extends Component {
     }
     return (
       <List>
-        {this.state.drafts.map((draft) => {
+        {this.state.drafts.map((draft, i) => {
           return (
             <ListItem
+              key={i}
               title={draft.client.firstName}
               avatar={draft.client.avatar}
               onPress={() => {
@@ -52,11 +53,10 @@ class ProgramDrafts extends Component {
                 });
               }}
             />
-          )
+          );
         })}
       </List>
     );
-
   }
 }
 

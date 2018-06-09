@@ -10,6 +10,11 @@ import {
 } from 'react-native-elements';
 
 class ProgramList extends Component {
+  static navigationOptions() {
+    return ({
+      headerTitle: 'My Programs'
+    });
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -24,17 +29,17 @@ class ProgramList extends Component {
   }
 
   render() {
-    const that = this;
     const { programs } = this.state;
     if (!programs.length) {
       return <Text>Loading...</Text>;
     }
     return (
       <View>
-        {
-          programs.map((program, i) => {
+        {programs.map((program, i) => {
             return (
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity
+                key={i}
+                onPress={() => {
                 this.props.navigation.navigate('Program', {
                   program: program
                 });
@@ -43,8 +48,7 @@ class ProgramList extends Component {
                 <Card key={i} title={program.id} />
               </TouchableOpacity>
             );
-          })
-        }
+          })}
       </View>
     );
   }

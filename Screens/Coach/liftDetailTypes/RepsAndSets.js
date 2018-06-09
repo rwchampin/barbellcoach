@@ -12,9 +12,23 @@ class RepsAndSets extends Component {
       sets: 3,
       reps: 5
     };
+    this.buildRepsAndSets = this.buildRepsAndSets.bind(this);
+  }
+  buildRepsAndSets() {
+    const reps = Array(this.state.reps).fill({
+      completed: false
+    });
+
+    const sets = Array(this.state.sets).fill({
+      completed: false,
+      reps: reps,
+      rpe: 5
+    });
+
+    this.props.setRepsAndSets(sets);
   }
   render() {
-    this.props.setRepsAndSets(this.state);
+    this.buildRepsAndSets();
     return (
       <View style={{ display: 'flex', flexDirection: 'row' }}>
         <View style={{ flex: 1 }}>

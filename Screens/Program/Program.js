@@ -101,6 +101,7 @@ class Program extends Component {
           index={i}
           week={week}
           toggleWeekActive={that.toggleWeekActive}
+          navigation={this.props.navigation}
         />
       );
     });

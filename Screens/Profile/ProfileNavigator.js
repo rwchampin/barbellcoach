@@ -3,6 +3,7 @@ import Profile from './Profile';
 import PostDetail from '../Post/PostDetail';
 import ProfileUtilities from './ProfileUtilities';
 import ProgramDrafts from './ProgramDrafts';
+import CreateProgram from '../Coach/CreateProgram';
 
 export const ProfileNavigator = createStackNavigator(
   {
@@ -20,6 +21,10 @@ export const ProfileNavigator = createStackNavigator(
     ProgramDrafts: {
       name: 'ProgramDrafts',
       screen: ProgramDrafts
+    },
+    CreateProgram: {
+      name: 'CreateProgram',
+      screen: CreateProgram
     }
   }, {
     initialRouteName: 'Profile',

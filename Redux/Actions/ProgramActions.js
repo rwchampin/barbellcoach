@@ -157,7 +157,7 @@ export const sendProgramToClient = (program) => {
     const { programs } = getState().ProgramReducer;
     const programIndex = _.findIndex(programs, { id: program });
     const savedProgram = programs[programIndex];
-    const ref = firebase.firestore().collection('userProfiles');
+    const ref = firebase.firestore().collection('userProfiles').where('uid', '==', savedProgram.client.uid);
     ref.get().then((snapshot) => {
       snapshot.forEach((userProfile) => {
         userProfile.ref.update({ 'programs': [savedProgram, ...userProfile.data().programs] });

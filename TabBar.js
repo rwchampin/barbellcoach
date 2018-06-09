@@ -7,6 +7,7 @@ import {
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
+import BarbellAvatar from './Screens/Common/BarbellAvatar'
 
 const activeTintColor = '#000000';
 const inactiveTintColor = '#929292';
@@ -42,15 +43,15 @@ class TabBar extends Component {
   }
   renderIcon(route, focused) {
     const color = focused ? activeTintColor : inactiveTintColor;
-    const profileStyle = { height: 30, width: 30, borderRadius: 15 };
+    let active = false;
     if (route === 'Profile' && focused) {
-      profileStyle.borderWidth = 1;
+      active = true;
     }
     const icons = {
       'Clients': <Icon name="people" size={35} color={color} />,
       'Programs': <Icon name="list" size={35} color={color} />,
       'Search': <Icon name="search" size={35} color={color} />,
-      'Profile': this.state.avatar ? <Image style={profileStyle} source={{ uri: this.state.avatar }} /> : <View style={{ height: 30, width: 30, borderRadius: 15, backgroundColor: 'grey' }} />,
+      'Profile': <BarbellAvatar size="small" active={active} source={this.state.avatar} />,
       'Notifications': <Icon name="email" size={35} color={color} />,
       'Landing': <Icon name="people" size={35} color={color} />,
       'Capture': <Icon name="camera" size={35} color={color} />
