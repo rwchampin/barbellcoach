@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Text,
-  ScrollView,
   View
 } from 'react-native';
 import PostThumbnail from './PostThumbnail';
@@ -10,7 +9,7 @@ class PostGrid extends Component {
   render() {
     const that = this;
     if (!this.props.gridItems.length) {
-      return <Text>No Posts Yet</Text>
+      return <Text>No Posts Yet</Text>;
     }
     return (
       <View style={{ display: 'flex', height: '100%', flexWrap: 'wrap', flex: 1, flexDirection: 'row' }}>

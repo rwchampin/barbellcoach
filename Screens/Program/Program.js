@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import {
   View,
   Text,
@@ -102,6 +101,7 @@ class Program extends Component {
           week={week}
           toggleWeekActive={that.toggleWeekActive}
           navigation={this.props.navigation}
+          programId={this.props.navigation.state.params.program.id}
         />
       );
     });

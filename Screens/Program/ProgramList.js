@@ -8,6 +8,12 @@ import {
 import {
   Card
 } from 'react-native-elements';
+import _ from 'lodash';
+import firebase from 'react-native-firebase';
+import {
+  addProgramsToRedux
+} from '../../Redux/Actions';
+
 
 class ProgramList extends Component {
   static navigationOptions() {
@@ -23,8 +29,15 @@ class ProgramList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      programs: nextProps.AuthReducer.user.userProfile.programs
+    const { email } = nextProps.userProfile;
+    const that = this;
+    const usersProgramsRef = firebase.firestore().collection('programs').doc(email);
+    usersProgramsRef.get().then((doc) => {
+      const programs = _.values(doc.data());
+      that.props.addProgramsToRedux(programs);
+      that.setState({
+        programs: programs
+      });
     });
   }
 
@@ -55,7 +68,9 @@ class ProgramList extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return state;
+  return state.AuthReducer.user;
 };
 
-export default connect(mapStateToProps)(ProgramList);
+export default connect(mapStateToProps, {
+  addProgramsToRedux
+})(ProgramList);

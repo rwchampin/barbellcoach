@@ -72,7 +72,8 @@ class Signup extends Component {
         'firstName': this.state.firstName,
         'lastName': this.state.lastName,
         'avatar': this.state.avatar,
-        'posts': []
+        'posts': [],
+        'email': this.state.email
       };
       if (buildUser.userType === 'coach') {
         buildUser.clients = [];

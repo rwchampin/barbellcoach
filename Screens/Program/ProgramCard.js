@@ -53,9 +53,11 @@ class ProgramCard extends Component {
         <Animated.View style={{ flex: 4, opacity: this.state.opacity }}>
           {this.props.week.days.map((day, i) => {
             return (
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity key={i} onPress={() => {
                 that.props.navigation.navigate('TrainingSession', {
-                  trainingSession: day
+                  trainingSession: day,
+                  programId: this.props.programId,
+                  weekId: this.props.week.id
                 });
               }}
               >

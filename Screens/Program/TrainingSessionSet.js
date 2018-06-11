@@ -1,35 +1,57 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
   View,
   Text,
   TouchableOpacity
 } from 'react-native';
-import {
-  Card,
-  Divider
-} from 'react-native-elements';
+import { updateRepsAndSets } from '../../Redux/Actions';
 
 class TrainingSessionSet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      repCount: 0,
-      maxRepCount: props.reps.length,
+      completedReps: 0,
+      reps: props.reps,
       completedSet: false
     };
+    this.reps = props.reps;
     this.increaseReps = this.increaseReps.bind(this);
   }
-  increaseReps() {
-    if (this.state.repCount === this.state.maxRepCount) {
-      return;
-    }
-    const reps = this.state.repCount + 1;
+  componentDidMount() {
+    const completedReps = this.state.reps.filter(rep => rep.completed);
     const state = {
-      repCount: reps
+      completedReps: completedReps.length
     };
-    if (reps === this.state.maxRepCount) {
+    if (completedReps.length === this.state.reps.length) {
       state.completedSet = true;
     }
+    this.setState(state);
+  }
+  increaseReps() {
+    const { programId, weekId, dayId, liftId, setId } = this.props;
+    if (this.state.completedReps === this.state.reps.length) {
+      // RESET EVERYTHING -- this isnt working
+      this.setState({
+        completedReps: 0,
+        reps: this.reps,
+        completedSet: false
+      });
+      this.props.updateRepsAndSets(programId, weekId, dayId, liftId, setId, this.reps);
+      return;
+    }
+    const completedReps = this.state.completedReps + 1;
+    const { reps } = this;
+    reps[completedReps - 1].completed = true;
+    const state = {
+      completedReps: completedReps,
+      reps: reps
+    };
+    if (completedReps === this.state.reps.length) {
+      state.completedSet = true;
+    }
+
+    this.props.updateRepsAndSets(programId, weekId, dayId, liftId, setId, reps);
     this.setState(state);
   }
   render() {
@@ -47,11 +69,17 @@ class TrainingSessionSet extends Component {
           backgroundColor: this.state.completedSet ? 'green' : 'white'
         }}
         >
-          <Text>{this.state.repCount}</Text>
+          <Text>{this.state.completedReps}</Text>
         </View>
       </TouchableOpacity>
     );
   }
 }
 
-export default TrainingSessionSet;
+const mapStateToProps = (state) => {
+  return state;
+};
+
+export default connect(mapStateToProps, {
+  updateRepsAndSets
+})(TrainingSessionSet);

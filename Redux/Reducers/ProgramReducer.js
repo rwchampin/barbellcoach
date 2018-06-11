@@ -6,7 +6,8 @@ import {
   ADD_LIFT,
   REMOVE_LIFT,
   UPDATE_PROGRAM,
-  CREATE_NEW_PROGRAM
+  CREATE_NEW_PROGRAM,
+  ADD_PROGRAMS_TO_REDUX
 } from '../Actions/types';
 
 const INITIAL_STATE = {
@@ -17,6 +18,8 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CREATE_NEW_PROGRAM:
       return { ...state, programs: [...state.programs, action.payload] };
+    case ADD_PROGRAMS_TO_REDUX:
+      return { ...state, programs: action.payload };
     case UPDATE_PROGRAM:
       return { ...state, programs: action.payload };
     case ADD_WEEK:

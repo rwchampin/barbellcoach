@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import uuid from 'uuid/v1';
 import _ from 'lodash';
+import firebase from 'react-native-firebase';
 import {
   Button
 } from 'react-native-elements';
@@ -58,42 +59,52 @@ class CreateProgram extends Component {
   }
 
   componentDidMount() {
-    if (this.props.navigation.state.params.program) {
-      this.programId = this.props.navigation.state.params.program.id;
-      this.props.navigation.setParams({
-        programId: this.programId
-      });
-      this.props.updateProgram(this.props.navigation.state.params.program);
-      return;
-    }
     this.programId = uuid();
     this.props.navigation.setParams({
       programId: this.programId
     });
-    this.props.createNewProgram({
+    const { email } = this.props.AuthReducer.user.userProfile;
+    const program = {
       id: this.programId,
       created: Date.now(),
-      coach: this.props.AuthReducer.user.userProfile,
+      coach: this.props.AuthReducer.user.userProfile.uid,
       client: this.props.navigation.state.params.client,
       program: [],
-      programProgress: 0
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const program = _.find(nextProps.ProgramReducer.programs, { id: this.programId });
-    this.setState({
-      program: program.program
+      programProgress: 0,
+      status: 'draft'
+    };
+    const updates = {};
+    updates[this.programId] = program;
+    firebase.firestore().collection('programs').doc(email).set(updates, {
+      merge: true
     });
   }
 
   addWeek() {
+    const weekId = uuid();
     const week = {
-      id: uuid(),
+      id: weekId,
       days: [],
       type: 'week'
     };
-    this.props.addWeek(week, this.programId);
+    const { email } = this.props.AuthReducer.user.userProfile;
+    const updates = {};
+    updates[weekId] = week;
+    firebase.firestore().collection('programWeek').doc(this.programId).set(updates, {
+      merge: true
+    });
+    const programWeeks = {};
+    const weekObj = {};
+    weekObj[`${weekId}`] = true;
+    programWeeks[`${this.programId}.program.${weekId}`] = weekObj;
+    firebase.firestore().collection('programs').doc(email).update(programWeeks);
+
+    const doc = firebase.firestore().collection('programWeek').doc(this.programId);
+    doc.onSnapshot((snapshot) => {
+      this.setState({
+        program: _.values(snapshot.data())
+      });
+    });
   }
 
   toggleLiftModal() {

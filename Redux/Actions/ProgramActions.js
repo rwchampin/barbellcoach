@@ -9,6 +9,8 @@ import {
   SAVE_PROGRAM,
   UPDATE_PROGRAM,
   CREATE_NEW_PROGRAM,
+  UPDATE_REPS_AND_SETS,
+  ADD_PROGRAMS_TO_REDUX,
   SEND_PROGRAM_TO_CLIENT
 } from './types';
 
@@ -16,6 +18,13 @@ export const createNewProgram = (newProgram) => {
   return {
     type: CREATE_NEW_PROGRAM,
     payload: newProgram
+  };
+};
+
+export const addProgramsToRedux = (programs) => {
+  return {
+    type: ADD_PROGRAMS_TO_REDUX,
+    payload: programs
   };
 };
 
@@ -28,6 +37,34 @@ export const updateProgram = (program) => {
     }
     return dispatch({
       type: UPDATE_PROGRAM,
+      payload: programs
+    });
+  };
+};
+
+export const updateRepsAndSets = (programId, weekId, dayId, liftId, setId, reps) => {
+  return (dispatch, getState) => {
+    const { programs } = getState().ProgramReducer;
+    const programIndex = _.findIndex(programs, { id: programId });
+    const weekIndex = _.findIndex(programs[programIndex].program, { id: weekId });
+    const week = _.find(programs[programIndex].program, { id: weekId });
+    const dayIndex = _.findIndex(week.days, { id: dayId });
+    const liftIndex = _.findIndex(week.days[dayIndex].lifts, { id: liftId });
+    const setIndex = _.findIndex(week.days[dayIndex].lifts[liftIndex].repsAndSets, { id: setId });
+    // Mark the `Set` as completed because even if one rep was done, the set has been done
+    programs[programIndex].program[weekIndex].days[dayIndex]
+      .lifts[liftIndex].repsAndSets[setIndex].completed = true;
+
+    programs[programIndex].program[weekIndex].days[dayIndex]
+      .lifts[liftIndex].repsAndSets[setIndex].reps = reps;
+
+    const ref = firebase.firestore().collection('programs').doc(programs[programIndex].client.email);
+    const update = {};
+    update[programs[programIndex].id] = programs[programIndex];
+    ref.update(update);
+
+    return dispatch({
+      type: UPDATE_REPS_AND_SETS,
       payload: programs
     });
   };
@@ -157,12 +194,10 @@ export const sendProgramToClient = (program) => {
     const { programs } = getState().ProgramReducer;
     const programIndex = _.findIndex(programs, { id: program });
     const savedProgram = programs[programIndex];
-    const ref = firebase.firestore().collection('userProfiles').where('uid', '==', savedProgram.client.uid);
-    ref.get().then((snapshot) => {
-      snapshot.forEach((userProfile) => {
-        userProfile.ref.update({ 'programs': [savedProgram, ...userProfile.data().programs] });
-      });
-    });
+    const newProgram = {};
+    newProgram[program] = savedProgram;
+    firebase.firestore().collection('programs')
+      .doc(savedProgram.client.email).set(newProgram, { merge: true });
     return dispatch({
       type: SEND_PROGRAM_TO_CLIENT,
       payload: ''

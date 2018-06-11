@@ -4,6 +4,7 @@ import {
   Text,
   Picker
 } from 'react-native';
+import uuid from 'uuid/v1';
 
 class RepsAndSets extends Component {
   constructor(props) {
@@ -14,19 +15,26 @@ class RepsAndSets extends Component {
     };
     this.buildRepsAndSets = this.buildRepsAndSets.bind(this);
   }
+
   buildRepsAndSets() {
-    const reps = Array(this.state.reps).fill({
-      completed: false
+    const reps = [...Array(this.state.reps).keys()].map(() => {
+      return {
+        completed: false,
+        id: uuid()
+      };
     });
 
-    const sets = Array(this.state.sets).fill({
-      completed: false,
-      reps: reps,
-      rpe: 5
+    const sets = [...Array(this.state.sets).keys()].map(() => {
+      return {
+        completed: false,
+        reps: reps,
+        rpe: 5,
+        id: uuid()
+      };
     });
-
     this.props.setRepsAndSets(sets);
   }
+
   render() {
     this.buildRepsAndSets();
     return (
