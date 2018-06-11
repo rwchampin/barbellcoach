@@ -4,6 +4,8 @@ import {
   View,
   TouchableOpacity
 } from 'react-native';
+import uuid from 'uuid/v1';
+import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import { addLift, addDetailToLift } from '../../Redux/Actions';
 import TabSections from '../Common/TabSections';
@@ -16,8 +18,12 @@ class LiftDetail extends Component {
       headerTitle: 'Lift Detail',
       headerRight: (
         <TouchableOpacity onPress={() => {
-            params.lift.repsAndSets = params.getRepsAndSets();
-            params.addDetailToLift(params.programId, params.weekId, params.dayId, params.lift);
+            const liftId = uuid();
+            params.getSets(liftId);
+            params.liftRef.set({
+              id: liftId,
+              liftType: params.liftType
+            });
             navigation.pop();
             navigation.goBack(null);
           }}
@@ -29,23 +35,45 @@ class LiftDetail extends Component {
   }
   constructor(props) {
     super(props);
-    this.getRepsAndSets = this.getRepsAndSets.bind(this);
-    this.setRepsAndSets = this.setRepsAndSets.bind(this);
-    this.repsAndSets = null;
+    this.getSets = this.getSets.bind(this);
+    this.setSets = this.setSets.bind(this);
+    this.setReps = this.setReps.bind(this);
+    this.reps = null;
+    this.sets = null;
   }
 
   componentWillMount() {
     this.props.navigation.setParams({
       addDetailToLift: this.props.addDetailToLift,
-      getRepsAndSets: this.getRepsAndSets
+      getSets: this.getSets,
+      getReps: this.getReps
     });
   }
 
-  getRepsAndSets() {
-    return this.repsAndSets;
+  getSets(liftId) {
+    const that = this;
+    this.sets.map((set) => {
+      const update = {};
+      update[set.id] = set;
+      firebase.firestore().collection('programSet').doc(liftId).set(update, {
+        merge: true
+      });
+      that.reps.map((rep) => {
+        firebase.firestore().collection('programRep').doc(set.id).set(rep, {
+          merge: true
+        });
+        return true;
+      });
+      return true;
+    });
+    return true;
   }
-  setRepsAndSets(repsAndSets) {
-    this.repsAndSets = repsAndSets;
+
+  setSets(sets) {
+    this.sets = sets;
+  }
+  setReps(reps) {
+    this.reps = reps;
   }
   render() {
     const tabRoutes = [
@@ -54,13 +82,13 @@ class LiftDetail extends Component {
       { key: '3', title: '%' }
     ];
     const routeMap = {
-      '1': () => <RepsAndSets setRepsAndSets={this.setRepsAndSets} />,
+      '1': () => <RepsAndSets setReps={this.setReps} setSets={this.setSets} />,
       '2': () => <View />,
       '3': () => <View />
     };
     return (
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: 20, marginBottom: 20 }}>{this.props.navigation.state.params.lift.liftType}</Text>
+        <Text style={{ fontSize: 40, textAlign: 'center', marginTop: 20, marginBottom: 20 }}>{this.props.navigation.state.params.liftType}</Text>
         <TabSections
           routeKeys={tabRoutes}
           routeMap={routeMap}

@@ -18,7 +18,7 @@ class ChooseLift extends Component {
     };
   }
   render() {
-    const { programId, weekId, dayId, lift } = this.props.navigation.state.params;
+    const { programId, weekId, dayId, liftRef } = this.props.navigation.state.params;
     return (
       <View style={{ paddingTop: 50 }}>
         <View>
@@ -30,12 +30,12 @@ class ChooseLift extends Component {
                   key={i}
                   title={liftType}
                   onPress={() => {
-                    lift.liftType = liftType;
                     this.props.navigation.navigate('LiftDetail', {
                       programId: programId,
                       weekId: weekId,
                       dayId: dayId,
-                      lift: lift
+                      liftRef: liftRef,
+                      liftType: liftType
                     });
                   }}
                 />

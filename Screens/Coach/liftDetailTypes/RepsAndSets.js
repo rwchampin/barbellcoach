@@ -27,12 +27,13 @@ class RepsAndSets extends Component {
     const sets = [...Array(this.state.sets).keys()].map(() => {
       return {
         completed: false,
-        reps: reps,
+        reps: {},
         rpe: 5,
         id: uuid()
       };
     });
-    this.props.setRepsAndSets(sets);
+    this.props.setReps(reps);
+    this.props.setSets(sets);
   }
 
   render() {

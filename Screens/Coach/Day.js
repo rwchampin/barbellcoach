@@ -9,6 +9,7 @@ import {
   Card,
   List
 } from 'react-native-elements';
+import firebase from 'react-native-firebase';
 import uuid from 'uuid/v1';
 import { removeDay, addLift } from '../../Redux/Actions';
 import Lift from './Lift';
@@ -26,15 +27,13 @@ class Day extends Component {
   }
 
   addLift() {
-    const lift = {
-      id: uuid()
-    };
-    this.props.addLift(this.props.weekId, this.props.dayId, lift, this.props.programId);
+    const liftRef = firebase.firestore().collection('programLift').doc(this.props.dayId);
+    // this.props.addLift(this.props.weekId, this.props.dayId, lift, this.props.programId);
     this.props.navigation.navigate('ChooseLiftModal', {
       programId: this.props.programId,
       weekId: this.props.weekId,
       dayId: this.props.dayId,
-      lift: lift
+      liftRef: liftRef
     });
   }
 
