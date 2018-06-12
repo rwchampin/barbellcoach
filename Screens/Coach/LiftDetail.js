@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity
 } from 'react-native';
-import uuid from 'uuid/v1';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import { addLift, addDetailToLift } from '../../Redux/Actions';
@@ -18,12 +17,7 @@ class LiftDetail extends Component {
       headerTitle: 'Lift Detail',
       headerRight: (
         <TouchableOpacity onPress={() => {
-            const liftId = uuid();
-            params.getSets(liftId);
-            params.liftRef.set({
-              id: liftId,
-              liftType: params.liftType
-            });
+            params.buildLift();
             navigation.pop();
             navigation.goBack(null);
           }}
@@ -35,46 +29,43 @@ class LiftDetail extends Component {
   }
   constructor(props) {
     super(props);
-    this.getSets = this.getSets.bind(this);
-    this.setSets = this.setSets.bind(this);
-    this.setReps = this.setReps.bind(this);
-    this.reps = null;
-    this.sets = null;
+    this.setAndReps = {};
+    this.buildLift = this.buildLift.bind(this);
+    this.setSetsAndReps = this.setSetsAndReps.bind(this);
   }
 
   componentWillMount() {
     this.props.navigation.setParams({
-      addDetailToLift: this.props.addDetailToLift,
-      getSets: this.getSets,
-      getReps: this.getReps
+      buildLift: this.buildLift
     });
   }
 
-  getSets(liftId) {
+  setSetsAndReps(setsAndReps) {
+    this.setsAndReps = setsAndReps;
+  }
+
+  buildLift() {
     const that = this;
-    this.sets.map((set) => {
-      const update = {};
-      update[set.id] = set;
-      firebase.firestore().collection('programSet').doc(liftId).set(update, {
-        merge: true
+    const newLift = {
+      created: firebase.firestore.FieldValue.serverTimestamp(),
+      dayId: this.props.navigation.state.params.dayId,
+      liftType: this.props.navigation.state.params.liftType,
+      type: 'lift'
+    };
+    const liftRef = firebase.firestore().collection('programLift').doc();
+    newLift.id = liftRef.id;
+    liftRef.set(newLift);
+
+    const doc = firebase.firestore().collection('programLift').where('dayId', '==', this.props.navigation.state.params.dayId).orderBy('created', 'asc');
+    doc.onSnapshot((querySnapshot) => {
+      const lifts = [];
+      querySnapshot.forEach((snapshot) => {
+        lifts.push(snapshot.data());
       });
-      that.reps.map((rep) => {
-        firebase.firestore().collection('programRep').doc(set.id).set(rep, {
-          merge: true
-        });
-        return true;
-      });
-      return true;
+      that.props.navigation.state.params.buildLifts(lifts);
     });
-    return true;
   }
 
-  setSets(sets) {
-    this.sets = sets;
-  }
-  setReps(reps) {
-    this.reps = reps;
-  }
   render() {
     const tabRoutes = [
       { key: '1', title: 'Sets' },
@@ -82,7 +73,7 @@ class LiftDetail extends Component {
       { key: '3', title: '%' }
     ];
     const routeMap = {
-      '1': () => <RepsAndSets setReps={this.setReps} setSets={this.setSets} />,
+      '1': () => <RepsAndSets setSetsAndReps={this.setSetsAndReps} />,
       '2': () => <View />,
       '3': () => <View />
     };

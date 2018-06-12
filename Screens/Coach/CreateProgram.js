@@ -45,6 +45,7 @@ class CreateProgram extends Component {
       program: [],
       modalVisible: false
     };
+    this.weeks = 0;
     this.programId = null;
     this.addWeek = this.addWeek.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
@@ -58,51 +59,42 @@ class CreateProgram extends Component {
     });
   }
 
-  componentDidMount() {
-    this.programId = uuid();
-    this.props.navigation.setParams({
-      programId: this.programId
-    });
-    const { email } = this.props.AuthReducer.user.userProfile;
-    const program = {
-      id: this.programId,
-      created: Date.now(),
+  async componentDidMount() {
+    const newProgram = {
+      created: firebase.firestore.FieldValue.serverTimestamp(),
       coach: this.props.AuthReducer.user.userProfile.uid,
       client: this.props.navigation.state.params.client,
-      program: [],
       programProgress: 0,
       status: 'draft'
     };
-    const updates = {};
-    updates[this.programId] = program;
-    firebase.firestore().collection('programs').doc(email).set(updates, {
-      merge: true
+    const programRef = await firebase.firestore().collection('programs').add(newProgram);
+    this.programId = programRef.id;
+
+    this.props.navigation.setParams({
+      programId: this.programId
     });
   }
 
   addWeek() {
-    const weekId = uuid();
-    const week = {
-      id: weekId,
-      days: [],
+    this.weeks = this.weeks + 1;
+    const newWeek = {
+      programId: this.programId,
+      created: firebase.firestore.FieldValue.serverTimestamp(),
       type: 'week'
     };
-    const { email } = this.props.AuthReducer.user.userProfile;
-    const updates = {};
-    updates[weekId] = week;
-    firebase.firestore().collection('programWeek').doc(this.programId).set(updates, {
-      merge: true
-    });
-    const programWeeks = {};
-    const weekObj = {};
-    weekObj[`${weekId}`] = true;
-    programWeeks[`${this.programId}.program.${weekId}`] = weekObj;
-    firebase.firestore().collection('programs').doc(email).update(programWeeks);
+    // Create week reference so we can get the ID and add that to the actual object
+    const weekRef = firebase.firestore().collection('programWeek').doc();
+    newWeek.id = weekRef.id;
+    weekRef.set(newWeek);
 
-    const doc = firebase.firestore().collection('programWeek').doc(this.programId);
-    doc.onSnapshot((snapshot) => {
+    const doc = firebase.firestore().collection('programWeek').where('programId', '==', this.programId).orderBy('created', 'asc');
+    doc.onSnapshot((querySnapshot) => {
+      const weeks = [];
+      querySnapshot.forEach((snapshot) => {
+        weeks.push(snapshot.data());
+      });
       this.setState({
-        program: _.values(snapshot.data())
+        program: weeks
       });
     });
   }
@@ -120,8 +112,7 @@ class CreateProgram extends Component {
           programId={this.programId}
           key={i}
           weekCount={i}
-          weekId={week.id}
-          days={week.days}
+          id={week.id}
           toggleLiftModal={this.toggleLiftModal}
           navigation={this.props.navigation}
         />

@@ -5,8 +5,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import uuid from 'uuid/v1';
-import _ from 'lodash';
 import {
   Card
 } from 'react-native-elements';
@@ -26,27 +24,26 @@ class Week extends Component {
   }
 
   addDay() {
-    const day = {
-      type: 'day',
-      lifts: [],
-      id: uuid()
+    const newDay = {
+      created: firebase.firestore.FieldValue.serverTimestamp(),
+      weekId: this.props.id,
+      type: 'day'
     };
-    const dayObj = {};
-    dayObj[day.id] = day;
-    firebase.firestore().collection('programDay').doc(this.props.weekId).set(dayObj, {
-      merge: true
-    });
 
-    const weekDays = {};
-    const dayUpdate = {};
-    dayUpdate[`${day.id}`] = true;
-    weekDays[`${this.props.weekId}.days.${day.id}`] = dayUpdate;
-    firebase.firestore().collection('programWeek').doc(this.props.programId).update(weekDays);
+    const dayRef = firebase.firestore().collection('programDay').doc();
+    newDay.id = dayRef.id;
+    dayRef.set(newDay);
 
-    const doc = firebase.firestore().collection('programDay').doc(this.props.weekId);
-    doc.onSnapshot((snapshot) => {
+    console.log(this.props.id)
+
+    const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id).orderBy('created', 'asc');
+    doc.onSnapshot((querySnapshot) => {
+      const days = [];
+      querySnapshot.forEach((snapshot) => {
+        days.push(snapshot.data());
+      });
       this.setState({
-        days: _.values(snapshot.data())
+        days: days
       });
     });
   }
@@ -59,13 +56,10 @@ class Week extends Component {
     const days = this.state.days.map((day, i) => {
       return (
         <Day
-          programId={this.props.programId}
+          dayId={day.id}
           navigation={this.props.navigation}
           key={i}
           dayNumber={i}
-          dayId={day.id}
-          weekId={this.props.weekId}
-          lifts={day.lifts}
         />
       );
     });
@@ -88,7 +82,8 @@ class Week extends Component {
     ) : null;
     return (
       <Card>
-        <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>\
+          <Text>{this.props.weekId}</Text>
           <Text style={{ fontWeight: 'bold' }}>
             {`Week ${this.props.weekCount + 1}`}
             <TouchableOpacity onPress={this.removeWeek}>

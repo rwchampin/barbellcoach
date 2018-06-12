@@ -10,57 +10,48 @@ import {
   List
 } from 'react-native-elements';
 import firebase from 'react-native-firebase';
-import uuid from 'uuid/v1';
 import { removeDay, addLift } from '../../Redux/Actions';
 import Lift from './Lift';
 
 class Day extends Component {
   constructor(props) {
     super(props);
-    this.removeDay = this.removeDay.bind(this);
+    this.state = {
+      lifts: []
+    };
     this.addLift = this.addLift.bind(this);
     this.buildLifts = this.buildLifts.bind(this);
   }
 
-  removeDay() {
-    this.props.removeDay(this.props.programId, this.props.dayId, this.props.weekId);
-  }
-
   addLift() {
-    const liftRef = firebase.firestore().collection('programLift').doc(this.props.dayId);
-    // this.props.addLift(this.props.weekId, this.props.dayId, lift, this.props.programId);
     this.props.navigation.navigate('ChooseLiftModal', {
-      programId: this.props.programId,
-      weekId: this.props.weekId,
       dayId: this.props.dayId,
-      liftRef: liftRef
+      buildLifts: this.buildLifts
     });
   }
 
-  buildLifts() {
-    const lifts = this.props.lifts.map((lift, i) => {
+  buildLifts(lifts) {
+    const builtLifts = lifts.map((lift, i) => {
       return (
         <Lift
-          programId={this.props.programId}
           key={i}
           lift={lift}
-          weekId={this.props.weekId}
-          dayId={this.props.dayId}
         />
       );
     });
-    return lifts;
+    this.setState({
+      lifts: builtLifts
+    });
   }
 
   render() {
-    const lifts = this.buildLifts();
     return (
       <View>
         <Card>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text>
               {`Day ${this.props.dayNumber + 1}`}
-              <TouchableOpacity onPress={this.removeDay}>
+              <TouchableOpacity>
                 <Text>Remove</Text>
               </TouchableOpacity>
             </Text>
@@ -69,7 +60,7 @@ class Day extends Component {
             </TouchableOpacity>
           </View>
           <List>
-            {lifts}
+            {this.state.lifts}
           </List>
         </Card>
       </View>
