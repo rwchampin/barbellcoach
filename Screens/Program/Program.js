@@ -6,6 +6,8 @@ import {
   Animated,
   Easing
 } from 'react-native';
+import _ from 'lodash';
+import firebase from 'react-native-firebase';
 import ProgramCard from './ProgramCard';
 
 class Program extends Component {
@@ -17,16 +19,35 @@ class Program extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      weeks: [],
       fullScreenSlide: false,
       slideWidth: new Animated.Value(Dimensions.get('window').width - 20),
       slideMargin: new Animated.Value(10),
       slideRadius: new Animated.Value(10),
       topHeight: new Animated.Value(1),
       programSectionHeight: new Animated.Value(0),
-      ryan: new Animated.Value(300)
+      ryan: new Animated.Value(300),
+      loading: true
     };
     this.renderItems = this.renderItems.bind(this);
     this.toggleWeekActive = this.toggleWeekActive.bind(this);
+  }
+
+  componentDidMount() {
+    const that = this;
+    const { program } = this.props.navigation.state.params;
+    const doc = firebase.firestore().collection('programWeek').where('programId', '==', program.id);
+    doc.onSnapshot((querySnapshot) => {
+      const weeks = [];
+      querySnapshot.forEach((snapshot) => {
+        weeks.push(snapshot.data());
+      });
+      const sorted = _.orderBy(weeks, ['created'], ['asc']);
+      that.setState({
+        loading: false,
+        weeks: sorted
+      });
+    });
   }
 
   toggleWeekActive() {
@@ -87,8 +108,7 @@ class Program extends Component {
 
   renderItems() {
     const that = this;
-    const { program } = this.props.navigation.state.params.program;
-    return program.map((week, i) => {
+    return this.state.weeks.map((week, i) => {
       return (
         <ProgramCard
           key={i}
@@ -108,7 +128,7 @@ class Program extends Component {
   }
 
   render() {
-    const weeks = this.renderItems();
+    const weeks = this.state.loading ? <Text>Loading...</Text> : this.renderItems();
     return (
       <View style={{ position: 'relative', height: '100%', backgroundColor: 'red', display: 'flex', flexDirection: 'column' }}>
         <Animated.View style={{ flex: this.state.topHeight }}>

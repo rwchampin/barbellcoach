@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity
 } from 'react-native';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import {
   Card,
@@ -21,6 +22,21 @@ class Day extends Component {
     };
     this.addLift = this.addLift.bind(this);
     this.buildLifts = this.buildLifts.bind(this);
+    this.removeDay = this.removeDay.bind(this);
+  }
+
+  componentDidMount() {
+    const that = this;
+    const doc = firebase.firestore().collection('programLift').where('dayId', '==', this.props.dayId);
+    doc.onSnapshot((querySnapshot) => {
+      const lifts = [];
+      querySnapshot.forEach((snapshot) => {
+        lifts.push(snapshot.data());
+      });
+      const sorted = _.orderBy(lifts, ['created'], ['asc']);
+      console.log(sorted)
+      that.buildLifts(sorted);
+    });
   }
 
   addLift() {
@@ -28,6 +44,10 @@ class Day extends Component {
       dayId: this.props.dayId,
       buildLifts: this.buildLifts
     });
+  }
+
+  removeDay() {
+    firebase.firestore().collection('programDay').doc(this.props.dayId).delete();
   }
 
   buildLifts(lifts) {
@@ -50,8 +70,8 @@ class Day extends Component {
         <Card>
           <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text>
-              {`Day ${this.props.dayNumber + 1}`}
-              <TouchableOpacity>
+              {`Day ${this.props.count}`}
+              <TouchableOpacity onPress={this.removeDay}>
                 <Text>Remove</Text>
               </TouchableOpacity>
             </Text>

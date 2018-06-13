@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Moment from 'react-moment';
 import {
   View,
   Text,
@@ -31,12 +32,15 @@ class ProgramList extends Component {
   componentWillReceiveProps(nextProps) {
     const { email } = nextProps.userProfile;
     const that = this;
-    const usersProgramsRef = firebase.firestore().collection('programs').doc(email);
-    usersProgramsRef.get().then((doc) => {
-      const programs = _.values(doc.data());
-      that.props.addProgramsToRedux(programs);
+    const doc = firebase.firestore().collection('programs').where('client.email', '==', email);
+    doc.onSnapshot((querySnapshot) => {
+      const programs = [];
+      querySnapshot.forEach((snapshot) => {
+        programs.push(snapshot.data());
+      });
+      const sorted = _.orderBy(programs, ['created'], ['asc']);
       that.setState({
-        programs: programs
+        programs: sorted
       });
     });
   }
@@ -58,7 +62,12 @@ class ProgramList extends Component {
                 });
               }}
               >
-                <Card key={i} title={program.id} />
+                <Card key={i} title={program.created.toString()}>
+                  <Text>Completed: 0%</Text>
+                  <Text>Week: 0 of 4</Text>
+                  <Text>Day: 1 of 6</Text>
+                  <Text>Sets: 0 of 65</Text>
+                </Card>
               </TouchableOpacity>
             );
           })}

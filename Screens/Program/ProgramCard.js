@@ -6,18 +6,37 @@ import {
   Animated,
   Easing
 } from 'react-native';
+import firebase from 'react-native-firebase';
+import _ from 'lodash';
 import {
-  Card,
   Icon
 } from 'react-native-elements';
+import DayCard from './DayCard';
 
 class ProgramCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      days: [],
       opacity: new Animated.Value(0)
     };
   }
+
+  componentDidMount() {
+    const that = this;
+    const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.week.id);
+    doc.onSnapshot((querySnapshot) => {
+      const days = [];
+      querySnapshot.forEach((snapshot) => {
+        days.push(snapshot.data());
+      });
+      const sorted = _.orderBy(days, ['created'], ['asc']);
+      that.setState({
+        days: sorted
+      });
+    });
+  }
+
   componentWillReceiveProps(nextProps) {
     Animated.timing(
       this.state.opacity,
@@ -29,7 +48,6 @@ class ProgramCard extends Component {
     ).start();
   }
   render() {
-    const that = this;
     return (
       <Animated.ScrollView style={{
         backgroundColor: 'blue',
@@ -48,31 +66,17 @@ class ProgramCard extends Component {
               <Icon name="plus" type="entypo" size={30} color={'#000000'} />
             </TouchableOpacity>
           </View>
-          <Text>{`Current Training: Day 1 of ${this.props.week.days.length}`}</Text>
+          <Text>{`Current Training: Day 1 of ${this.state.days.length}`}</Text>
         </Animated.View>
         <Animated.View style={{ flex: 4, opacity: this.state.opacity }}>
-          {this.props.week.days.map((day, i) => {
+          {this.state.days.map((day, i) => {
             return (
-              <TouchableOpacity key={i} onPress={() => {
-                that.props.navigation.navigate('TrainingSession', {
-                  trainingSession: day,
-                  programId: this.props.programId,
-                  weekId: this.props.week.id
-                });
-              }}
-              >
-                <Card key={i} style={{ padding: 10 }}>
-                  <Text style={{ fontWeight: 'bold' }}>{`Day ${i + 1}`}</Text>
-                  {day.lifts.map((lift, x) => {
-                    return (
-                      <View key={x} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text>{lift.liftType}</Text>
-                        <Text>{`${lift.repsAndSets.length} x ${lift.repsAndSets[0].reps.length}`}</Text>
-                      </View>
-                    );
-                  })}
-                </Card>
-              </TouchableOpacity>
+              <DayCard
+                key={i}
+                navigation={this.props.navigation}
+                day={day}
+                dayCount={i}
+              />
             );
           })}
         </Animated.View>

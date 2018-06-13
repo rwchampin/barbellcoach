@@ -41,12 +41,10 @@ class LiftDetail extends Component {
   }
 
   setSetsAndReps(setsAndReps) {
-    console.log(setsAndReps);
     this.setsAndReps = setsAndReps;
   }
 
   buildLift() {
-    const that = this;
     const newLift = {
       created: firebase.firestore.FieldValue.serverTimestamp(),
       dayId: this.props.navigation.state.params.dayId,
@@ -57,15 +55,6 @@ class LiftDetail extends Component {
     const liftRef = firebase.firestore().collection('programLift').doc();
     newLift.id = liftRef.id;
     liftRef.set(newLift);
-
-    const doc = firebase.firestore().collection('programLift').where('dayId', '==', this.props.navigation.state.params.dayId).orderBy('created', 'asc');
-    doc.onSnapshot((querySnapshot) => {
-      const lifts = [];
-      querySnapshot.forEach((snapshot) => {
-        lifts.push(snapshot.data());
-      });
-      that.props.navigation.state.params.buildLifts(lifts);
-    });
   }
 
   render() {

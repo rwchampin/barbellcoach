@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
 import ProgramList from './ProgramList';
 import Program from './Program';
-import TrainingSession from './TrainingSession';
+import TrainingDay from './TrainingDay';
 
 export const ProgramNavigator = createStackNavigator(
   {
@@ -13,9 +13,9 @@ export const ProgramNavigator = createStackNavigator(
       name: 'Program',
       screen: Program
     },
-    TrainingSession: {
-      name: 'TrainingSession',
-      screen: TrainingSession
+    TrainingDay: {
+      name: 'TrainingDay',
+      screen: TrainingDay
     }
   }, {
     initialRouteName: 'ProgramList',

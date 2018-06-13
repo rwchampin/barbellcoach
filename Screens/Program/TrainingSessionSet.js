@@ -10,53 +10,15 @@ import { updateRepsAndSets } from '../../Redux/Actions';
 class TrainingSessionSet extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      completedReps: 0,
-      reps: props.reps,
-      completedSet: false
-    };
-    this.reps = props.reps;
-    this.increaseReps = this.increaseReps.bind(this);
+    this.click = this.click.bind(this);
   }
-  componentDidMount() {
-    const completedReps = this.state.reps.filter(rep => rep.completed);
-    const state = {
-      completedReps: completedReps.length
-    };
-    if (completedReps.length === this.state.reps.length) {
-      state.completedSet = true;
-    }
-    this.setState(state);
-  }
-  increaseReps() {
-    const { programId, weekId, dayId, liftId, setId } = this.props;
-    if (this.state.completedReps === this.state.reps.length) {
-      // RESET EVERYTHING -- this isnt working
-      this.setState({
-        completedReps: 0,
-        reps: this.reps,
-        completedSet: false
-      });
-      this.props.updateRepsAndSets(programId, weekId, dayId, liftId, setId, this.reps);
-      return;
-    }
-    const completedReps = this.state.completedReps + 1;
-    const { reps } = this;
-    reps[completedReps - 1].completed = true;
-    const state = {
-      completedReps: completedReps,
-      reps: reps
-    };
-    if (completedReps === this.state.reps.length) {
-      state.completedSet = true;
-    }
-
-    this.props.updateRepsAndSets(programId, weekId, dayId, liftId, setId, reps);
-    this.setState(state);
+  click() {
+    this.props.updateSetsAndReps(this.props.index);
   }
   render() {
+    const complete = this.props.set.completedReps === this.props.set.reps;
     return (
-      <TouchableOpacity onPress={this.increaseReps}>
+      <TouchableOpacity onPress={this.click}>
         <View
           style={{ display: 'flex',
           justifyContent: 'center',
@@ -66,10 +28,10 @@ class TrainingSessionSet extends Component {
           borderRadius: 25,
           borderWidth: 2,
           borderColor: 'black',
-          backgroundColor: this.state.completedSet ? 'green' : 'white'
+          backgroundColor: complete ? 'green' : 'white'
         }}
         >
-          <Text>{this.state.completedReps}</Text>
+          <Text>{this.props.set.completedReps}</Text>
         </View>
       </TouchableOpacity>
     );

@@ -29,10 +29,10 @@ class CreateProgram extends Component {
       headerTitle: headerTitle,
       headerRight: (
         <TouchableOpacity onPress={() => {
-          params.saveProgram(params.programId);
+          params.sendProgram();
         }}
         >
-          <Text style={{ marginRight: 20 }}>Save Draft</Text>
+          <Text style={{ marginRight: 20 }}>Send</Text>
         </TouchableOpacity>
       )
     });
@@ -47,14 +47,14 @@ class CreateProgram extends Component {
     this.weeks = 0;
     this.programId = null;
     this.addWeek = this.addWeek.bind(this);
+    this.sendProgram = this.sendProgram.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
     this.toggleLiftModal = this.toggleLiftModal.bind(this);
-    this.sendProgramToClient = this.sendProgramToClient.bind(this);
   }
 
   componentWillMount() {
     this.props.navigation.setParams({
-      saveProgram: this.props.saveProgram
+      sendProgram: this.sendProgram
     });
   }
 
@@ -66,23 +66,18 @@ class CreateProgram extends Component {
       programProgress: 0,
       status: 'draft'
     };
-    const programRef = await firebase.firestore().collection('programs').add(newProgram);
+    const programRef = await firebase.firestore().collection('programs').doc();
     this.programId = programRef.id;
-
-    this.props.navigation.setParams({
-      programId: this.programId
-    });
-
+    newProgram.id = programRef.id;
+    programRef.set(newProgram);
     const doc = firebase.firestore().collection('programWeek').where('programId', '==', this.programId);
     doc.onSnapshot((querySnapshot) => {
       const weeks = [];
       querySnapshot.forEach((snapshot) => {
         weeks.push(snapshot.data());
-      }, (error) => {
-        alert(error)
       });
       this.setState({
-        program: weeks
+        program: _.orderBy(weeks, ['created'], ['asc'])
       });
     });
   }
@@ -92,6 +87,7 @@ class CreateProgram extends Component {
     const newWeek = {
       programId: this.programId,
       created: firebase.firestore.FieldValue.serverTimestamp(),
+      something: 'lily',
       type: 'week',
       count: this.weeks
     };
@@ -133,9 +129,13 @@ class CreateProgram extends Component {
     );
   }
 
-  sendProgramToClient() {
-    this.props.sendProgramToClient(this.programId);
+  sendProgram() {
+    firebase.firestore().collection('programs').doc(this.programId).update({
+      status: 'sent'
+    });
     this.props.navigation.goBack();
+
+    // TODO: SEND NOTIFICATION TO CLIENT WHEN SENT
   }
 
   render() {

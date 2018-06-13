@@ -5,6 +5,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   Card
 } from 'react-native-elements';
@@ -18,36 +19,37 @@ class Week extends Component {
     this.state = {
       'days': []
     };
+    this.days = 0;
     this.addDay = this.addDay.bind(this);
     this.removeWeek = this.removeWeek.bind(this);
     this.buildDays = this.buildDays.bind(this);
   }
 
   componentDidMount() {
-
-  }
-
-  addDay() {
-    const newDay = {
-      created: firebase.firestore.FieldValue.serverTimestamp(),
-      weekId: this.props.id,
-      type: 'day'
-    };
-
-    const dayRef = firebase.firestore().collection('programDay').doc();
-    newDay.id = dayRef.id;
-    dayRef.set(newDay);
-
-    const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id).orderBy('created', 'asc');
+    const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id);
     doc.onSnapshot((querySnapshot) => {
       const days = [];
       querySnapshot.forEach((snapshot) => {
         days.push(snapshot.data());
       });
       this.setState({
-        days: days
+        days: _.orderBy(days, ['created'], ['asc'])
       });
     });
+  }
+
+  addDay() {
+    this.days = this.days + 1;
+    const newDay = {
+      created: firebase.firestore.FieldValue.serverTimestamp(),
+      weekId: this.props.id,
+      type: 'day',
+      count: this.days
+    };
+
+    const dayRef = firebase.firestore().collection('programDay').doc();
+    newDay.id = dayRef.id;
+    dayRef.set(newDay);
   }
 
   removeWeek() {
@@ -62,6 +64,7 @@ class Week extends Component {
           navigation={this.props.navigation}
           key={i}
           dayNumber={i}
+          count={day.count}
         />
       );
     });
