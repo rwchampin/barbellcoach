@@ -23,6 +23,10 @@ class Week extends Component {
     this.buildDays = this.buildDays.bind(this);
   }
 
+  componentDidMount() {
+
+  }
+
   addDay() {
     const newDay = {
       created: firebase.firestore.FieldValue.serverTimestamp(),
@@ -33,8 +37,6 @@ class Week extends Component {
     const dayRef = firebase.firestore().collection('programDay').doc();
     newDay.id = dayRef.id;
     dayRef.set(newDay);
-
-    console.log(this.props.id)
 
     const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id).orderBy('created', 'asc');
     doc.onSnapshot((querySnapshot) => {
@@ -49,7 +51,7 @@ class Week extends Component {
   }
 
   removeWeek() {
-    this.props.removeWeek(this.props.weekId, this.props.programId);
+    firebase.firestore().collection('programWeek').doc(this.props.id).delete();
   }
 
   buildDays() {

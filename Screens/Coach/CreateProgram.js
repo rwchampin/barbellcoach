@@ -6,7 +6,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import uuid from 'uuid/v1';
 import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import {
@@ -73,6 +72,19 @@ class CreateProgram extends Component {
     this.props.navigation.setParams({
       programId: this.programId
     });
+
+    const doc = firebase.firestore().collection('programWeek').where('programId', '==', this.programId);
+    doc.onSnapshot((querySnapshot) => {
+      const weeks = [];
+      querySnapshot.forEach((snapshot) => {
+        weeks.push(snapshot.data());
+      }, (error) => {
+        alert(error)
+      });
+      this.setState({
+        program: weeks
+      });
+    });
   }
 
   addWeek() {
@@ -80,23 +92,13 @@ class CreateProgram extends Component {
     const newWeek = {
       programId: this.programId,
       created: firebase.firestore.FieldValue.serverTimestamp(),
-      type: 'week'
+      type: 'week',
+      count: this.weeks
     };
     // Create week reference so we can get the ID and add that to the actual object
     const weekRef = firebase.firestore().collection('programWeek').doc();
     newWeek.id = weekRef.id;
     weekRef.set(newWeek);
-
-    const doc = firebase.firestore().collection('programWeek').where('programId', '==', this.programId).orderBy('created', 'asc');
-    doc.onSnapshot((querySnapshot) => {
-      const weeks = [];
-      querySnapshot.forEach((snapshot) => {
-        weeks.push(snapshot.data());
-      });
-      this.setState({
-        program: weeks
-      });
-    });
   }
 
   toggleLiftModal() {
@@ -111,7 +113,7 @@ class CreateProgram extends Component {
         <Week
           programId={this.programId}
           key={i}
-          weekCount={i}
+          weekCount={week.count}
           id={week.id}
           toggleLiftModal={this.toggleLiftModal}
           navigation={this.props.navigation}

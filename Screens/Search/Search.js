@@ -100,13 +100,14 @@ class Search extends Component {
             const isClient = client.coach === this.props.AuthReducer.user.userProfile.uid;
             const isInvited = client.invited ? 'Invited' : 'Invite';
             const button = isClient ? 'Coaching' : isInvited;
+            const image = client.avatar ? { uri: client.avatar } : require('../../placeholder.jpg');
             return (
               <ListItem
                 title={client.firstName}
                 key={i}
                 subtitle="test"
                 roundAvatar
-                avatar={{ uri: client.avatar }}
+                avatar={image}
                 rightIcon={
                   <TouchableOpacity
                     onPress={() => {

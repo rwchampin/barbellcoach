@@ -41,6 +41,7 @@ class LiftDetail extends Component {
   }
 
   setSetsAndReps(setsAndReps) {
+    console.log(setsAndReps);
     this.setsAndReps = setsAndReps;
   }
 
@@ -50,7 +51,8 @@ class LiftDetail extends Component {
       created: firebase.firestore.FieldValue.serverTimestamp(),
       dayId: this.props.navigation.state.params.dayId,
       liftType: this.props.navigation.state.params.liftType,
-      type: 'lift'
+      type: 'lift',
+      setsAndReps: this.setsAndReps
     };
     const liftRef = firebase.firestore().collection('programLift').doc();
     newLift.id = liftRef.id;

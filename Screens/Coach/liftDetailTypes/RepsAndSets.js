@@ -22,7 +22,13 @@ class RepsAndSets extends Component {
   }
 
   render() {
-    this.props.setSetsAndReps(this.state);
+    const that = this;
+    this.props.setSetsAndReps(Array(this.state.sets).fill().map(() => {
+      return {
+        reps: that.state.reps,
+        completedReps: 0
+      };
+    }));
     return (
       <View style={{ display: 'flex', flexDirection: 'row' }}>
         <View style={{ flex: 1 }}>

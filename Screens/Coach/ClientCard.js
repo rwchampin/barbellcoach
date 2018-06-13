@@ -35,6 +35,7 @@ class ClientCard extends Component {
     });
   }
   render() {
+    const image = this.state.client.avatar ? { uri: this.state.client.avatar } : require('../../placeholder.jpg');
     return (
       <TouchableOpacity onPress={this.goToClientDetail}>
         <Card title={this.state.client.firstName} containerStyle={{ borderColor: 'black', backgroundColor: '#f7f9fc' }}>
@@ -42,7 +43,7 @@ class ClientCard extends Component {
             <Image
               style={{width: 50, height: 50, borderRadius: 25}}
               resizeMode="cover"
-              source={{ uri: this.state.client.avatar }}
+              source={image}
             />
             <Text>{this.state.client.firstName}</Text>
           </View>

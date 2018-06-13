@@ -14,7 +14,7 @@ class Lift extends Component {
       <ListItem
         title={this.props.lift.liftType}
         style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}
-        rightIcon={<Text>repsAndSets</Text>}
+        rightIcon={<Text>{this.props.lift.setsAndReps.length} x {this.props.lift.setsAndReps[0].reps}</Text>}
       >
         <Text style={{ fontWeight: 'bold' }}>
           <TouchableOpacity onPress={this.removeLift}>
