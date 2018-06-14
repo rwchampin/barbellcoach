@@ -11,7 +11,6 @@ import {
 } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Day from './Day';
-import { addDay, removeWeek } from '../../Redux/Actions';
 
 class Week extends Component {
   constructor(props) {
@@ -26,8 +25,10 @@ class Week extends Component {
   }
 
   componentDidMount() {
+    const that = this;
     const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id);
-    doc.onSnapshot((querySnapshot) => {
+    this.sub = doc.onSnapshot((querySnapshot) => {
+      console.log(this.props.id);
       const days = [];
       querySnapshot.forEach((snapshot) => {
         days.push(snapshot.data());
@@ -36,6 +37,10 @@ class Week extends Component {
         days: _.orderBy(days, ['created'], ['asc'])
       });
     });
+  }
+
+  componentWillUnmount() {
+    this.sub();
   }
 
   addDay() {
@@ -53,6 +58,7 @@ class Week extends Component {
   }
 
   removeWeek() {
+    alert(this.props.id);
     firebase.firestore().collection('programDay').where('weekId', '==', this.props.id)
       .get()
       .then((querySnapshot) => {
@@ -95,7 +101,7 @@ class Week extends Component {
     return (
       <Card>
         <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>\
-          <Text>{this.props.weekId}</Text>
+          <Text>{this.props.id}</Text>
           <Text style={{ fontWeight: 'bold' }}>
             {`Week ${this.props.weekCount + 1}`}
             <TouchableOpacity onPress={this.removeWeek}>
@@ -114,7 +120,4 @@ const mapStateToProps = (state) => {
   return state;
 };
 
-export default connect(mapStateToProps, {
-  addDay,
-  removeWeek
-})(Week);
+export default connect(mapStateToProps)(Week);
