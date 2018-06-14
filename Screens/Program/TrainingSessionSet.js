@@ -16,7 +16,6 @@ class TrainingSessionSet extends Component {
     this.props.updateSetsAndReps(this.props.index);
   }
   render() {
-    const complete = this.props.set.completedReps === this.props.set.reps;
     return (
       <TouchableOpacity onPress={this.click}>
         <View
@@ -28,7 +27,7 @@ class TrainingSessionSet extends Component {
           borderRadius: 25,
           borderWidth: 2,
           borderColor: 'black',
-          backgroundColor: complete ? 'green' : 'white'
+          backgroundColor: this.props.set.fullSetCompleted ? 'green' : 'white'
         }}
         >
           <Text>{this.props.set.completedReps}</Text>

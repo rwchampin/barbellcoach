@@ -53,7 +53,14 @@ class Week extends Component {
   }
 
   removeWeek() {
-    firebase.firestore().collection('programWeek').doc(this.props.id).delete();
+    firebase.firestore().collection('programDay').where('weekId', '==', this.props.id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((snapshot) => {
+          snapshot.ref.delete();
+        });
+      });
+      firebase.firestore().collection('programWeek').doc(this.props.id).delete();
   }
 
   buildDays() {

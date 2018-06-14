@@ -43,9 +43,10 @@ class DayCard extends Component {
         <Card style={{ padding: 10 }}>
           <Text style={{ fontWeight: 'bold' }}>{`Day ${this.props.dayCount + 1}`}</Text>
           {this.state.lifts.map((lift, x) => {
+            const completed = lift.liftCompleted ? ' - done' : '';
             return (
               <View key={x} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text>{lift.liftType}</Text>
+                <Text>{lift.liftType}{completed}</Text>
                 <Text>{`${lift.setsAndReps.length} x ${lift.setsAndReps[0].reps}`}</Text>
               </View>
             );

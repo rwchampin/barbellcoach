@@ -49,6 +49,7 @@ class LiftDetail extends Component {
       created: firebase.firestore.FieldValue.serverTimestamp(),
       dayId: this.props.navigation.state.params.dayId,
       liftType: this.props.navigation.state.params.liftType,
+      liftCompleted: false,
       type: 'lift',
       setsAndReps: this.setsAndReps
     };

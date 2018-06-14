@@ -24,8 +24,6 @@ class ClientCard extends Component {
       that.setState({
         client: docSnapshot._docs[0].data()
       });
-    }, (err) => {
-      console.log(`Encountered error: ${err}`);
     });
   }
   goToClientDetail() {
@@ -41,7 +39,7 @@ class ClientCard extends Component {
         <Card title={this.state.client.firstName} containerStyle={{ borderColor: 'black', backgroundColor: '#f7f9fc' }}>
           <View>
             <Image
-              style={{width: 50, height: 50, borderRadius: 25}}
+              style={{ width: 50, height: 50, borderRadius: 25}}
               resizeMode="cover"
               source={image}
             />

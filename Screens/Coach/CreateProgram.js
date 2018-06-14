@@ -49,6 +49,7 @@ class CreateProgram extends Component {
     this.addWeek = this.addWeek.bind(this);
     this.sendProgram = this.sendProgram.bind(this);
     this.buildProgram = this.buildProgram.bind(this);
+    this.deleteProgram = this.deleteProgram.bind(this);
     this.toggleLiftModal = this.toggleLiftModal.bind(this);
   }
 
@@ -64,6 +65,12 @@ class CreateProgram extends Component {
       coach: this.props.AuthReducer.user.userProfile.uid,
       client: this.props.navigation.state.params.client,
       programProgress: 0,
+      totalSets: 0,
+      totalSetsCompleted: 0,
+      totalDays: 0,
+      currentDay: 1,
+      totalWeeks: 0,
+      currentWeek: 1,
       status: 'draft'
     };
     const programRef = await firebase.firestore().collection('programs').doc();
@@ -87,9 +94,8 @@ class CreateProgram extends Component {
     const newWeek = {
       programId: this.programId,
       created: firebase.firestore.FieldValue.serverTimestamp(),
-      something: 'lily',
       type: 'week',
-      count: this.weeks
+      weekNum: this.weeks
     };
     // Create week reference so we can get the ID and add that to the actual object
     const weekRef = firebase.firestore().collection('programWeek').doc();
@@ -109,7 +115,7 @@ class CreateProgram extends Component {
         <Week
           programId={this.programId}
           key={i}
-          weekCount={week.count}
+          weekCount={week.weekNum}
           id={week.id}
           toggleLiftModal={this.toggleLiftModal}
           navigation={this.props.navigation}
@@ -138,6 +144,11 @@ class CreateProgram extends Component {
     // TODO: SEND NOTIFICATION TO CLIENT WHEN SENT
   }
 
+  deleteProgram() {
+    firebase.firestore().collection('programs').doc(this.programId).delete();
+    this.props.navigation.goBack();
+  }
+
   render() {
     const programContent = this.state.program.length ? this.buildProgram() : (
       <View style={{
@@ -162,6 +173,13 @@ class CreateProgram extends Component {
           onPress={this.addWeek}
         />
         {programContent}
+        <Button
+          title="Delete Draft"
+          backgroundColor="red"
+          style={{ marginTop: 20 }}
+          containerStyle={{ width: '100%' }}
+          onPress={this.deleteProgram}
+        />
       </View>
     );
   }

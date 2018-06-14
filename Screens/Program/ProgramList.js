@@ -62,11 +62,9 @@ class ProgramList extends Component {
                 });
               }}
               >
-                <Card key={i} title={program.created.toString()}>
-                  <Text>Completed: 0%</Text>
-                  <Text>Week: 0 of 4</Text>
-                  <Text>Day: 1 of 6</Text>
-                  <Text>Sets: 0 of 65</Text>
+                <Card key={i}>
+                  <Text>{program.created.toString()}</Text>
+                  <Text>{`Week ${program.totalWeeksCompleted}`} of {program.totalWeeks}</Text>
                 </Card>
               </TouchableOpacity>
             );

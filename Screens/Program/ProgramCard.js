@@ -47,6 +47,7 @@ class ProgramCard extends Component {
       }
     ).start();
   }
+
   render() {
     return (
       <Animated.ScrollView style={{

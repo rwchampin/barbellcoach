@@ -26,7 +26,8 @@ class RepsAndSets extends Component {
     this.props.setSetsAndReps(Array(this.state.sets).fill().map(() => {
       return {
         reps: that.state.reps,
-        completedReps: 0
+        completedReps: 0,
+        fullSetCompleted: false
       };
     }));
     return (
