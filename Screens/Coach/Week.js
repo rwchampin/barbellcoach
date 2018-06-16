@@ -26,9 +26,10 @@ class Week extends Component {
 
   componentDidMount() {
     const that = this;
+    console.log('mount', this.props.id);
     const doc = firebase.firestore().collection('programDay').where('weekId', '==', this.props.id);
     this.sub = doc.onSnapshot((querySnapshot) => {
-      console.log(this.props.id);
+
       const days = [];
       querySnapshot.forEach((snapshot) => {
         days.push(snapshot.data());
@@ -40,7 +41,7 @@ class Week extends Component {
   }
 
   componentWillUnmount() {
-    this.sub();
+    console.log('unmount', this.props.id)
   }
 
   addDay() {
@@ -57,8 +58,25 @@ class Week extends Component {
     dayRef.set(newDay);
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log('props', nextProps.id)
+    if(this.sub) {
+      this.sub();
+    }
+    const doc = firebase.firestore().collection('programDay').where('weekId', '==', nextProps.id);
+    this.sub = doc.onSnapshot((querySnapshot) => {
+
+      const days = [];
+      querySnapshot.forEach((snapshot) => {
+        days.push(snapshot.data());
+      });
+      this.setState({
+        days: _.orderBy(days, ['created'], ['asc'])
+      });
+    });
+  }
+
   removeWeek() {
-    alert(this.props.id);
     firebase.firestore().collection('programDay').where('weekId', '==', this.props.id)
       .get()
       .then((querySnapshot) => {
